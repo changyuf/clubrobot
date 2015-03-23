@@ -6,13 +6,15 @@ import requests
 from qqadapter.core.qqsession import QQSession
 from qqadapter.action.get_login_sig_action import GetLoginSigAction
 from qqadapter.action.check_verify_action import CheckVerifyAction
+from qqadapter.bean.qquser import QQAccount
 
 
 class QQClient:
     def __init__(self, qq, password):
-        self.qq = qq
-        self.qqName = None
-        self.password = password
+        self.account = QQAccount
+        self.account.user_name = qq
+        self.account.password = password
+
         self.session = QQSession
         # self.session = requests.Session()
         #self.session.headers.update(HEADERS)
@@ -38,7 +40,10 @@ class QQClient:
         return GetLoginSigAction.get_log_sig(self.session)
 
     def __check_verify(self):
-        return CheckVerifyAction.check_verify(self.session, self.qq)
+        ret = CheckVerifyAction.check_verify(self.session, self.account.user_name)
+        if ret[0]:
+            return False
+
 
 
 if __name__ == "__main__":
