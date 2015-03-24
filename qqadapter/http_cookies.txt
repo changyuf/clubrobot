@@ -1,0 +1,4 @@
+#LWP-Cookies-2.0
+Set-Cookie3: confirmuin=0; path="/"; domain=".ptlogin2.qq.com"; path_spec; discard; version=0
+Set-Cookie3: ptvfsession=2d394f35ecf9a92eacdb56a009e54a60b885ff2afa440f7b7266ba9532c9200abb6084b4f922967ed3bb08480aceb50e96a3a797f408dbfe; path="/"; domain=".ptlogin2.qq.com"; path_spec; discard; version=0
+Set-Cookie3: ptisp=cnc; path="/"; domain=".qq.com"; path_spec; discard; version=0

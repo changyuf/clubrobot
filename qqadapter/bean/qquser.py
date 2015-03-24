@@ -1,17 +1,19 @@
 # -*- coding:utf8 -*-
+__metaclass__ = type
 __author__ = 'changyuf'
+
 
 class QQUser:
     def __init__(self):
         self.uin = -2
         self.qq = 0
-        #private QQStatus status = None
+        # private QQStatus status = None
         #private QQClientType clientType = None # 客户类型
         #private QQLevel level = None	#等级
-        self.loginDate = None # 登录时间
-        self.nickname = None # 昵称
-        self.sign = None # 个性签名
-        self.gender = None # 性别
+        self.loginDate = None  # 登录时间
+        self.nickname = None  # 昵称
+        self.sign = None  # 个性签名
+        self.gender = None  # 性别
         #private Date birthday = None # 出生日期
         #self.phone = None # 电话
         #self.mobile = None # 手机
@@ -27,7 +29,7 @@ class QQUser:
         #self.country = None # 国家
         #self.province = None # 省
         #self.city = None # 城市
-        self.personal = None # 个人说明
+        self.personal = None  # 个人说明
         #self.occupation  # 职业
         #private int chineseZodiac = None # 生肖
         #private int flag = None
@@ -37,7 +39,7 @@ class QQUser:
 
 
 class QQAccount(QQUser):
-    def __init__(self):
-        super(self)
-        self.password = None
-        self.user_name = None
+    def __init__(self, user_name, password):
+        super(QQAccount, self).__init__()
+        self.password = password
+        self.user_name = user_name
