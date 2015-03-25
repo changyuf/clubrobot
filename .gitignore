@@ -2,3 +2,5 @@
 .idea
 *.txt
 run.sh
+*.png
+*.bak

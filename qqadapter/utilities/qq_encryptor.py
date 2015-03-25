@@ -16,7 +16,13 @@ class QQEncryptor:
         cx = rt.new_context()
         fs = open(QQEncryptor.mq_comm_js, "r")
         func = cx.execute(fs.read())
-        return func(qq_account.password, qq_account.user_name, verify_code)
+
+        #test
+        print "uin in qq_account:"
+        print qq_account.uin
+        print "user_name in qq_account:%s" % qq_account.user_name
+
+        return func(qq_account.password, qq_account.uin, verify_code)
 
 
 if __name__ == '__main__':

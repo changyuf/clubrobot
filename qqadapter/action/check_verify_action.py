@@ -5,7 +5,6 @@ import requests
 import re
 import random
 from qqadapter.core.qqconstants import QQConstants
-from qqadapter.core.qqsession import QQSession
 from qqadapter.utilities.utilities import HttpCookies
 
 
@@ -25,7 +24,7 @@ class CheckVerifyAction:
         regxp = "ptui_checkVC\('(.*?)','(.*?)','(.*?)'(,\s*'(.*?)')?\)"
 
         m = re.search(regxp, r.content)
-        #print "group0:" + m.group(0)
+        print "group0:" + m.group(0)
         #print "group1:" + m.group(1)
         #print "group2:" + m.group(2)
         #print "group3:" + m.group(3)
@@ -34,7 +33,8 @@ class CheckVerifyAction:
         verify_code = m.group(2)
         uin = m.group(3).replace("\\x", "")
 
-        return result, verify_code, int(uin, 16)
+        #return result, verify_code, long(uin, 16)
+        return result, verify_code, uin
 
 
 if __name__ == '__main__':
