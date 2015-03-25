@@ -2,6 +2,7 @@
 
 __author__ = 'changyuf'
 
+import requests
 from qqadapter.core.qqconstants import QQConstants
 from qqadapter.core.qqsession import QQSession
 from qqadapter.utilities.utilities import HttpCookies
@@ -12,10 +13,10 @@ class WebLoginAction:
         pass
 
     @staticmethod
-    def login(qq_session, qq_account, verify_code):
+    def login(qq_session, qq_account, verify_code, need_input_verify_code = False):
         #URL_UI_LOGIN
         url = "https://ssl.ptlogin2.qq.com/login"
-        parameters = __construct_parameters(qq_session, qq_account, verify_code)
+        parameters = WebLoginAction.__construct_parameters(qq_session, qq_account, verify_code, need_input_verify_code)
 
         r = requests.get(url, params=parameters)
 
@@ -24,11 +25,16 @@ class WebLoginAction:
         print r.content
 
     @staticmethod
-    def __construct_parameters(qq_session, qq_account, verify_code):
+    def __construct_parameters(qq_session, qq_account, verify_code, need_input_verify_code):
+        if need_input_verify_code:
+            ptvfsession = HttpCookies.get_value('verifysession')
+        else:
+            HttpCookies.get_value('ptvfsession')
+
         parameters = {
-            'u': 'qq_account.user_name',
-            'p': QQEncryptor.encrypt2(qq_account.user_name, qq_account.password, verify_code),
-            'verifycode': verifyCode,
+            'u': qq_account.user_name,
+            'p': QQEncryptor.encrypt2(qq_account, verify_code),
+            'verifycode': verify_code,
             'webqq_type': '10',
             'remember_uin': '1',
             'login2qq': '1',
@@ -54,7 +60,7 @@ class WebLoginAction:
             'pt_uistyle': '5',
             'pt_randsalt': '0',
             'pt_vcode_v1': '0',
-            'pt_verifysession_v1': HttpCookies.get_value('ptvfsession')
+            'pt_verifysession_v1': ptvfsession
         }
 
         return parameters

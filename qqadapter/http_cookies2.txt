@@ -1,8 +1,0 @@
-#LWP-Cookies-2.0
-Set-Cookie3: confirmuin=0; path="/"; domain=".ptlogin2.qq.com"; path_spec; discard; version=0
-Set-Cookie3: ptvfsession=dcc0fa1fe4f71c654cab7ca1ec369aa34cbbbeddc658d1209a4b9de0efc1ba81d884d23292922cd0904563f81dab22d4ee288fd62b276ccb; path="/"; domain=".ptlogin2.qq.com"; path_spec; discard; version=0
-Set-Cookie3: uikey=a058c1ceaebcf6ea69319f86043f8845ed8e6a99a182cd319cb75d85dea1e6ba; path="/"; domain=".ptlogin2.qq.com"; path_spec; discard; version=0
-Set-Cookie3: ptisp=cnc; path="/"; domain=".qq.com"; path_spec; discard; version=0
-Set-Cookie3: login_param="daid%3D164%26target%3Dself%26style%3D5%26mibao_css%3Dm_webqq%26appid%3D1003903%26enable_qlogin%3D0%26no_verifyimg%3D1%26s_url%3Dhttp%253A%252F%252Fweb2.qq.com%252Floginproxy.html%26f_url%3Dloginerroralert%26strong_login%3D1%26login_state%3D10%26t%3D20140612002"; path="/"; domain=".ui.ptlogin2.qq.com"; path_spec; discard; version=0
-Set-Cookie3: pt_user_id=14446368986820211181; path="/"; domain=".ui.ptlogin2.qq.com"; path_spec; expires="2025-03-21 15:05:18Z"; version=0
-Set-Cookie3: ptui_identifier=000DECD90FD44ECA8F36FA609BBB0354ACB89512CB6C0C991595F733; path="/"; domain=".ui.ptlogin2.qq.com"; path_spec; discard; version=0
