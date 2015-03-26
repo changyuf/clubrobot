@@ -3,6 +3,7 @@
 __author__ = 'changyuf'
 
 import requests
+import re
 from qqadapter.core.qqconstants import QQConstants
 from qqadapter.core.qqsession import QQSession
 from qqadapter.utilities.utilities import HttpCookies
@@ -24,12 +25,32 @@ class WebLoginAction:
 
         print r.content
 
+        #REGXP_LOGIN
+        regxp = "ptuiCB\('(\d+)','(\d+)','(.*?)','(\d+)','(.*?)', '(.*?)'\)"
+        #"ptui_checkVC\('(.*?)','(.*?)','(.*?)'(,\s*'(.*?)')?\)"
+
+        m = re.search(regxp, r.content)
+        result = m.group(1)
+        url = m.group(3)
+        reason = m.group(5)
+        print "group0:" + m.group(0)
+        print "group1:" + m.group(1)
+        print "group2:" + m.group(2)
+        print "group3:" + m.group(3)
+        print "group3:" + m.group(4)
+        print "group3:" + m.group(5)
+        print "group3:" + m.group(6)
+
+        return result, url, reason
+
     @staticmethod
     def __construct_parameters(qq_session, qq_account, verify_code, need_input_verify_code):
         if need_input_verify_code:
             ptvfsession = HttpCookies.get_value('verifysession')
+            print "verifysession:" + ptvfsession
         else:
-            HttpCookies.get_value('ptvfsession')
+            ptvfsession = HttpCookies.get_value('ptvfsession')
+            print "ptvfsession:" + ptvfsession
 
         parameters = {
             'u': qq_account.user_name,

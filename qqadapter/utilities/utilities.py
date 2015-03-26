@@ -14,6 +14,7 @@ class HttpCookies:
 
     @staticmethod
     def save_cookies(cookie_jar):
+        HttpCookies.dump()
         for c in cookie_jar:
             args = dict(vars(c).items())
             args['rest'] = args['_rest']
@@ -49,3 +50,7 @@ class HttpCookies:
 
         return None
 
+    @staticmethod
+    def dump():
+        for cookie in HttpCookies.cookie_jar:
+            print "key:%s\t value:%s" % (cookie.name, cookie.value)

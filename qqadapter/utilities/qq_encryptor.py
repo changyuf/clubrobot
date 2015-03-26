@@ -18,6 +18,10 @@ class QQEncryptor:
 
     @staticmethod
     def encrypt2(qq_account, verify_code):
+
+        #test
+        print "verify_code:" + verify_code
+
         if platform.system() == "Windows":
             return QQEncryptor.__encrypt_windows(qq_account, verify_code)
         else:
@@ -45,7 +49,7 @@ class QQEncryptor:
         js.AllowUI  = False
         fs = open("qq_comm.js", "r")
         js.AddCode(fs.read())
-        return js.Run("getPassword", qq_account.password, qq_account.user_name, verify_code)
+        return js.Run("getPassword", qq_account.password, qq_account.uin, verify_code)
 
 
 if __name__ == '__main__':
