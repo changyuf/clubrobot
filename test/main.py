@@ -1,7 +1,6 @@
 # -*- coding:utf8 -*-
 __author__ = 'changyuf'
 
-from qqadapter.qqclient import QQClient
 import sys
 import os
 import platform
@@ -9,10 +8,56 @@ import random
 import datetime
 import requests
 import re
+from enum import Enum
+
+
+class TestProperty(object):
+    def __init__(self):
+        self.__state = TestProperty.StateS.OFFLINE
+        print type(self.__state)
+
+    @property
+    def state(self):
+        return self.__state
+
+    @state.setter
+    def state(self, value):
+        if isinstance(value, TestProperty.StateS):
+            self.__state = value
+        else:
+            print "invalid value for state"
+
+    @state.deleter
+    def state(self):
+        del self.__state
+
+    class StateS(Enum):
+        #(OFFLINE, ONLINE, KICKED, LOGINING, ERROR) = range(0, 5)
+        OFFLINE = 0
+        ONLINE = 1
+        KICKED = 2
+        LOGINING = 3
+        ERROR = 4
+        # value2name = {0 : 'OFFLINE',1: 'ONLINE', 2:'KICKED', 3:'LOGINING', 4:'ERROR'}
+        # @staticmethod
+        # def to_string(state):
+        #     return TestProperty.StateS.value2name[state]
+
+
 
 from qqadapter.core.qqconstants import QQConstants
 
 if __name__ == "__main__":
+    test = TestProperty()
+    print
+    print test.state.name
+    test.state = 100 #TestProperty.StateS.ERROR
+    test.state = TestProperty.StateS.LOGINING
+    print test.state.name == 'LOGINING'
+    #print TestProperty.StateS.to_string(test.state)
+
+    exit()
+
     try:
         f = open("user.txt")
         user = f.readline()
@@ -23,9 +68,9 @@ if __name__ == "__main__":
 
     # print user, password
 
-    #print Constants.USER_AGENT
+    # print Constants.USER_AGENT
     url = QQConstants.URL_CHECK_VERIFY.format(user, 'WKopqcbLJTQ1fs*AO3JW8IBqC*x5E8ICrner0obUGL6arpF68F8CGTsva8iu54Yd',
-                                            random.random())
+                                              random.random())
 
     print "url:" + url
     print
