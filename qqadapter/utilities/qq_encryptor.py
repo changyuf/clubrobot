@@ -49,7 +49,7 @@ class QQEncryptor:
         js.AllowUI  = False
         fs = open("qq_comm.js", "r")
         js.AddCode(fs.read())
-        return js.Run("getPassword", qq_account.password, qq_account.uin, verify_code)
+        return js.Run("getPassword", qq_account.password, qq_account.uin_hex, verify_code)
 
 
 if __name__ == '__main__':

@@ -2,12 +2,18 @@
 __metaclass__ = type
 __author__ = 'changyuf'
 
+from enum import Enum
+
 
 class QQUser:
+    STATUS_DICT = {"online": 10, "offline": 20, "away": 30, "hidden": 40, "busy": 50, "callme": 60, "silent": 70}
+
     def __init__(self):
-        self.uin = -2
-        self.qq = 0
-        # private QQStatus status = None
+        self.uin_hex = None
+        self.uin = None
+        # fake_qq is qq in java
+        self.qq = None
+        status = None
         #private QQClientType clientType = None # 客户类型
         #private QQLevel level = None	#等级
         self.loginDate = None  # 登录时间

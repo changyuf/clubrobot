@@ -4,8 +4,12 @@ __author__ = 'changyuf'
 import cookielib
 
 
+class WebQQException(Exception):
+    pass
+
+
 class HttpCookies:
-    #file_name = "./http_cookies.txt"
+    # file_name = "./http_cookies.txt"
     cookie_jar = cookielib.LWPCookieJar(filename="./http_cookies2.txt")
     #cookie_jar = None
 
@@ -14,7 +18,7 @@ class HttpCookies:
 
     @staticmethod
     def save_cookies(cookie_jar):
-        HttpCookies.dump()
+        HttpCookies.dump(cookie_jar)
         for c in cookie_jar:
             args = dict(vars(c).items())
             args['rest'] = args['_rest']
@@ -51,6 +55,8 @@ class HttpCookies:
         return None
 
     @staticmethod
-    def dump():
-        for cookie in HttpCookies.cookie_jar:
+    def dump(cookies=None):
+        if not cookies:
+            cookies = HttpCookies.cookie_jar
+        for cookie in cookies:
             print "key:%s\t value:%s" % (cookie.name, cookie.value)

@@ -11,6 +11,8 @@ class CheckLoginSigAction:
 
     @staticmethod
     def check_login_sig(url):
+        print ""
+        print "start check_login_sig"
         #print "URL in check_login_sig:" + url
         r = requests.get(url, headers=QQConstants.HEADERS)
         #print r.content
@@ -18,7 +20,8 @@ class CheckLoginSigAction:
         print r.cookies
         HttpCookies.save_cookies(r.cookies)
 
-        if r.status_code == '200':
+        print "r.status_code in check_login_sig:" + str(r.status_code)
+        if r.status_code == 200:
             return True
 
         return False

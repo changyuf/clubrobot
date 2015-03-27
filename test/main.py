@@ -32,12 +32,12 @@ class TestProperty(object):
         del self.__state
 
     class StateS(Enum):
-        #(OFFLINE, ONLINE, KICKED, LOGINING, ERROR) = range(0, 5)
-        OFFLINE = 0
-        ONLINE = 1
-        KICKED = 2
-        LOGINING = 3
-        ERROR = 4
+        (OFFLINE, ONLINE, KICKED, LOGINING, ERROR) = range(0, 5)
+        # OFFLINE = 0
+        # ONLINE = 1
+        # KICKED = 2
+        # LOGINING = 3
+        # ERROR = 4
         # value2name = {0 : 'OFFLINE',1: 'ONLINE', 2:'KICKED', 3:'LOGINING', 4:'ERROR'}
         # @staticmethod
         # def to_string(state):

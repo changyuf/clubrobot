@@ -1,10 +1,12 @@
 # -*- coding:utf8 -*-
-
 __author__ = 'changyuf'
 
+from enum import Enum
 
-class QQSession:
+
+class QQSession(object):
     def __init__(self):
+        self.client_id = None
         self.session_id = None
         self.vfwebqq = None
         self.ptwebqq = None
@@ -15,7 +17,22 @@ class QQSession:
         self.index = None  # 禁用群时需要
         self.port = None  # 禁用群时需要
         self.pollErrorCnt = None
-        self.state = QQSession.State.OFFLINE
+        self.__state = QQSession.State.OFFLINE
 
-    class State:
+    @property
+    def state(self):
+        return self.__state
+
+    @state.setter
+    def state(self, value):
+        if isinstance(value, QQSession.State):
+            self.__state = value
+        else:
+            print "invalid value for state"
+
+    @state.deleter
+    def state(self):
+        del self.__state
+
+    class State(Enum):
         (OFFLINE, ONLINE, KICKED, LOGINING, ERROR) = range(0, 5)

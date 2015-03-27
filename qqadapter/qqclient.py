@@ -12,13 +12,16 @@ from qqadapter.utilities.utilities import HttpCookies
 from qqadapter.action.web_login_action import WebLoginAction
 from qqadapter.action.get_captcha_image_action import GetCaptchaImageAction
 from qqadapter.action.check_login_sig_action import CheckLoginSigAction
+from qqadapter.action.channel_login_action import ChannelLoginAction
+from qqadapter.module.user_module import UserModule
 
 
 class QQClient:
     def __init__(self, user_name, password):
         self.account = QQAccount(user_name, password)
 
-        self.qq_session = QQSession
+        self.qq_session = QQSession()
+        self.requests_session = requests.session()
         self.verify_code = None
         # self.uin = None
         # self.session = requests.Session()
@@ -64,7 +67,13 @@ class QQClient:
         if not web_login_ret[0] == '0':
             return False
 
-        CheckLoginSigAction.check_login_sig(web_login_ret[1])
+        if not CheckLoginSigAction.check_login_sig(web_login_ret[1]):
+            return False
+
+        if not ChannelLoginAction.channel_login(qq_session=self.qq_session, requests_session=self.requests_session, account=self.account):
+            return False
+
+        UserModule.get_friend_info(self.qq_session, self.account)
 
     def __get_log_sig(self):
         return GetLoginSigAction.get_log_sig(self.qq_session)
@@ -72,11 +81,11 @@ class QQClient:
     def __check_verify(self):
         ret = CheckVerifyAction.check_verify(self.qq_session, self.account.user_name)
         self.verify_code = ret[1]
-        self.account.uin = ret[2]
+        self.account.uin_hex = ret[2]
 
         # test
         print "uin:"
-        print self.account.uin
+        print self.account.uin_hex
 
         if ret[0] == '1':
             return True

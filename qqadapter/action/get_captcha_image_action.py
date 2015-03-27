@@ -44,7 +44,7 @@ class GetCaptchaImageAction:
 
 if __name__ == '__main__':
     qq_account = QQAccount("2899530487", "123456789")
-    qq_account.uin = 2899530487
+    qq_account.uin_hex = 2899530487
     r = GetCaptchaImageAction.get_captcha_image(qq_account)
     if r:
         print "get image success"

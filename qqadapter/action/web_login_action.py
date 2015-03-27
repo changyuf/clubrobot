@@ -20,6 +20,7 @@ class WebLoginAction:
         parameters = WebLoginAction.__construct_parameters(qq_session, qq_account, verify_code, need_input_verify_code)
 
         r = requests.get(url, params=parameters)
+        HttpCookies.save_cookies(r.cookies)
 
         print(r.url)
 
