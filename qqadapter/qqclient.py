@@ -67,10 +67,11 @@ class QQClient:
         if not web_login_ret[0] == '0':
             return False
 
-        if not CheckLoginSigAction.check_login_sig(web_login_ret[1]):
+        check_result =  CheckLoginSigAction.check_login_sig(web_login_ret[1])
+        if not check_result[0]:
             return False
 
-        if not ChannelLoginAction.channel_login(qq_session=self.qq_session, requests_session=self.requests_session, account=self.account):
+        if not ChannelLoginAction.channel_login(qq_session=self.qq_session, requests_session=self.requests_session, account=self.account, cookie=check_result[1]):
             return False
 
         UserModule.get_friend_info(self.qq_session, self.account)
@@ -98,7 +99,8 @@ class QQClient:
 
 
 if __name__ == "__main__":
-    client = QQClient('2899530487', '123456789')
+    #client = QQClient('2899530487', '123456789')
     #client = QQClient('3106426008', 'leepet123')
+    client = QQClient('3047296752', '123456789')
     # 3047296752
     client.login()

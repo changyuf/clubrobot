@@ -22,6 +22,6 @@ class CheckLoginSigAction:
 
         print "r.status_code in check_login_sig:" + str(r.status_code)
         if r.status_code == 200:
-            return True
+            return (True, r.cookies)
 
-        return False
+        return (False, None)

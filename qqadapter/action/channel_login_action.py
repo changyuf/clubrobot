@@ -15,7 +15,7 @@ class ChannelLoginAction:
         pass
 
     @staticmethod
-    def channel_login(qq_session, requests_session, account):
+    def channel_login(qq_session, requests_session, account, cookie):
         print "start channel_login"
         # URL_CHANNEL_LOGIN
         url = "http://d.web2.qq.com/channel/login2"
@@ -24,21 +24,54 @@ class ChannelLoginAction:
 
         print "ptwebqq in cookies:" + HttpCookies.get_value('ptwebqq')
 
-        rdict = json.dumps({
-            "status": "online",
-            "ptwebqq": HttpCookies.get_value('ptwebqq'),
-            "passwd_sig": "",
-            "clientid": qq_session.client_id,
-            "psessionid": qq_session.session_id}
-        )
+        # rdict = json.dumps({
+        #     "status": "online",
+        #     "ptwebqq": HttpCookies.get_value('ptwebqq'),
+        #     "passwd_sig": "",
+        #     "clientid": qq_session.client_id,
+        #     "psessionid": qq_session.session_id}
+        # )
 
-        post_data = "r=%s&clientid=%s&psessionid=%s" % (urllib.quote(rdict), qq_session.client_id, qq_session.session_id)
+        #print "rdict:" + rdict
+
+        #post_data = "r=%s&clientid=%s&psessionid=%s" % (rdict, qq_session.client_id, qq_session.session_id)
+            #urllib.quote(rdict), qq_session.client_id, qq_session.session_id)
         #post_data = "r=%s&clientid=%s&psessionid=%s" % (urllib.quote(rdict), qq_session.client_id, qq_session.session_id)
 
-        print "post_data in channel_login_action:" + post_data
+        #print "post_data in channel_login_action:" + post_data
+
+        ExploereHEADERS = {
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip,deflate,sdch",
+            "Accept-Language": "zh-CN,zh;q=0.8,en;q=0.6",
+            "Content-type": "application/x-www-form-urlencoded",
+            #'Content-type': 'application/json',
+            'Accept-Language': 'zh-CN,zh;q=0.8',
+            'User-Agent': QQConstants.USER_AGENT,
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Connection": "keep-alive",
+            "Cache-Control": "no-cache",
+            "Referer": QQConstants.REFFER
+        }
         try:
-            #requests_session.headers['Referer'] = QQConstants.REFFER
-            response = requests_session.post(url, data=post_data, headers=QQConstants.HEADERS)
+            # requests_session.headers['Referer'] = QQConstants.REFFER
+            # hder = QQConstants.HEADERS
+            # hder['Referer'] = QQConstants.REFFER
+            # hder['Content-type'] = 'application/x-www-form-urlencoded'
+            # #response = requests_session.post(url, data=post_data, headers=QQConstants.HEADERS)
+            # print "cookies:\n\n\n"
+            # HttpCookies.dump(cookie)
+            # print "\n\n\n"
+            # response = requests.post(url, data=post_data, headers=ExploereHEADERS, cookies=cookie)
+            payload = json.dumps({
+                "status": "online",
+                "ptwebqq": HttpCookies.get_value('ptwebqq'),
+                "clientid": qq_session.client_id,
+                "psessionid": qq_session.session_id
+            })
+            post_data = "r=%s" % urllib.quote(payload)
+            response = requests.post(url,  data=post_data, headers=ExploereHEADERS, cookies=cookie)
+
 
             print response.content
 

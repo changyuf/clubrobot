@@ -7,7 +7,7 @@ from enum import Enum
 class QQSession(object):
     def __init__(self):
         self.client_id = None
-        self.session_id = None
+        self.session_id = ""
         self.vfwebqq = None
         self.ptwebqq = None
         self.login_sig = None

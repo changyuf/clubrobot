@@ -39,7 +39,7 @@ class QQEncryptor:
         print qq_account.uin
         print "user_name in qq_account:%s" % qq_account.user_name
 
-        return func(qq_account.password, qq_account.uin, verify_code)
+        return func(qq_account.password, qq_account.uin_hex, verify_code)
 
     @staticmethod
     def __encrypt_windows(qq_account, verify_code):
