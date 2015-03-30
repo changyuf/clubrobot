@@ -4,7 +4,7 @@ __author__ = 'changyuf'
 
 class QQGroup:
     def __init__(self):
-        self.gid = None  # 真实的群号
+        self.gid = -2  # 真实的群号
         self.gin = None  # 变换后的群号
         self.code = None
         self.clazz = None
@@ -24,6 +24,12 @@ class QQGroup:
             'gin': self.gin,
         })
 
+    def get_member_by_uin(self, uin):
+        for member in self.members:
+            if member.uin == uin:
+                return member
+
+        return None
 
 if __name__ == '__main__':
     group = QQGroup()

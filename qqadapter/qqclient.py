@@ -17,6 +17,7 @@ from qqadapter.module.user_module import UserModule
 from qqadapter.module.group_module import GroupModule
 from qqadapter.module.category_module import CategoryModule
 from qqadapter.core.qqstore import QQStore
+from qqadapter.action.poll_message_action import PollMessageAction
 
 
 class QQClient:
@@ -29,6 +30,7 @@ class QQClient:
         self.store = QQStore()
         self.group_module = GroupModule(self.qq_session, self.request_session, self.account, self.store)
         self.category_module = CategoryModule(self.qq_session, self.request_session, self.account, self.store)
+
         # self.uin = None
         # self.session = requests.Session()
         # self.session.headers.update(HEADERS)
@@ -83,8 +85,20 @@ class QQClient:
         UserModule.get_friend_info(self.qq_session, self.account, self.request_session)
         self.group_module.get_group_list()
         self.category_module.get_category_list()
+        self.begin_poll_message()
 
-        self.store.print_category_info()
+
+
+        #self.store.print_category_info()
+
+    def begin_poll_message(self):
+        if self.qq_session.state == QQSession.State.OFFLINE:
+            print "client is already offline !!!"
+            return False
+        poll_message_action = PollMessageAction(self.qq_session, self.request_session, self.account, self.store, self.group_module)
+        while True:
+            poll_message_action.poll_message()
+            time.sleep(2)
 
 
 

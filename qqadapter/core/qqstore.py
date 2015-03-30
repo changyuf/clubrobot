@@ -4,6 +4,17 @@ __author__ = 'changyuf'
 
 from qqadapter.bean.qq_category import QQCategory
 from qqadapter.bean.qq_buddy import QQBuddy
+from qqadapter.core.qqsession import QQSession
+from qqadapter.action.get_login_sig_action import GetLoginSigAction
+from qqadapter.action.check_verify_action import CheckVerifyAction
+from qqadapter.bean.qquser import QQAccount
+from qqadapter.utilities.utilities import HttpCookies
+from qqadapter.action.web_login_action import WebLoginAction
+from qqadapter.action.get_captcha_image_action import GetCaptchaImageAction
+from qqadapter.action.check_login_sig_action import CheckLoginSigAction
+from qqadapter.action.channel_login_action import ChannelLoginAction
+from qqadapter.module.user_module import UserModule
+from qqadapter.module.group_module import GroupModule
 
 class QQStore:
     def __init__(self):
@@ -20,6 +31,9 @@ class QQStore:
             if g.gin == gin:
                 return g
         return None
+
+    def add_group(self, group):
+        self.group_map[group.code] = group
 
     def print_category_info(self):
         print "******** 好友列表  ********"
