@@ -13,7 +13,7 @@ class GetLoginSigAction:
     @staticmethod
     def get_log_sig(session):
         url = QQConstants.URL_LOGIN_PAGE
-        r = requests.get(url, headers=QQConstants.HEADERS)
+        r = requests.get(url, headers=QQConstants.GET_HEADERS)
         HttpCookies.save_cookies(r.cookies)
 
         # REGXP_LOGIN_SIG

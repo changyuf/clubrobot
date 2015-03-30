@@ -14,12 +14,13 @@ class WebLoginAction:
         pass
 
     @staticmethod
-    def login(qq_session, qq_account, verify_code, need_input_verify_code = False):
+    def login(qq_session, qq_account, verify_code, requests_session, need_input_verify_code = False):
         #URL_UI_LOGIN
         url = "https://ssl.ptlogin2.qq.com/login"
         parameters = WebLoginAction.__construct_parameters(qq_session, qq_account, verify_code, need_input_verify_code)
 
-        r = requests.get(url, params=parameters)
+        #r = requests.get(url, params=parameters)
+        r = requests_session.get(url, params=parameters)
         HttpCookies.save_cookies(r.cookies)
 
         print(r.url)

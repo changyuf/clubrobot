@@ -8,6 +8,7 @@ import random
 import datetime
 import requests
 import re
+import json
 from enum import Enum
 
 
@@ -48,6 +49,29 @@ class TestProperty(object):
 from qqadapter.core.qqconstants import QQConstants
 
 if __name__ == "__main__":
+
+    response = '{"retcode":0,"result":{"uin":3047296752,"cip":1928459678,"index":1075,"port":48324,"status":"online","vfwebqq":"fc3fa781b5bee59093f591c1209008a2a730c51fd3f08886fa5797ba21448c0cff93b02858f28570","psessionid":"8368046764001d636f6e6e7365727665725f77656271714031302e3133392e372e31363400001e04000000c0036e0400f00ea2b56d0000000a404e615935786a44666c6d00000028fc3fa781b5bee59093f591c1209008a2a730c51fd3f08886fa5797ba21448c0cff93b02858f28570","user_state":0,"f":0}}'
+    data = json.loads(response, encoding='utf-8')
+    print data["retcode"]
+
+
+    ret = data["result"]
+    print ret["uin"]
+    print ret["uin"]
+    print  ret["status"]
+    print  ret["psessionid"]
+    print  ret["vfwebqq"]
+    print  ret["index"]
+    print  ret["port"]
+    uin = ret["uin"]
+    parameters = {
+            'tuin': str(str(uin))
+     }
+
+    print parameters['tuin']
+
+    exit()
+
     test = TestProperty()
     print
     print test.state.name
@@ -77,7 +101,7 @@ if __name__ == "__main__":
 
     url = QQConstants.URL_LOGIN_PAGE
     s = requests.session()
-    r = s.get(url, headers=QQConstants.HEADERS)
+    r = s.get(url, headers=QQConstants.GET_HEADERS)
     #r = requests.get(url, headers=Constants.HEADERS)
 
     #if r.headers :

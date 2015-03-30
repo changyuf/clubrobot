@@ -13,11 +13,11 @@ class QQUser:
         self.uin = None
         # fake_qq is qq in java
         self.qq = None
-        status = None
-        #private QQClientType clientType = None # 客户类型
+        self.status = None
+        self.client_type = None # 客户类型
         #private QQLevel level = None	#等级
         self.loginDate = None  # 登录时间
-        self.nickname = None  # 昵称
+        self.nick_name = ''  # 昵称
         self.sign = None  # 个性签名
         self.gender = None  # 性别
         #private Date birthday = None # 出生日期
@@ -42,6 +42,15 @@ class QQUser:
         #private int cip = None
         #private transient BufferedImage face = None # 头像,不能被序列化
         #private QQAllow allow = None		#对方加好友验证请求设置
+
+    class Status(Enum):
+        ONLINE = 10
+        OFFLINE = 20
+        AWAY = 30
+        HIDDEN = 40
+        BUSY = 50
+        CALLME = 60
+        SILENT = 70
 
 
 class QQAccount(QQUser):

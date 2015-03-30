@@ -16,7 +16,7 @@ class GetCaptchaImageAction:
         pass
 
     @staticmethod
-    def get_captcha_image(qq_account):
+    def get_captcha_image(qq_account, requests_session):
         #URL_GET_CAPTCHA
         url  = "http://captcha.qq.com/getimage";
         parameters = {
@@ -24,7 +24,8 @@ class GetCaptchaImageAction:
             'r': str(random.random()),
             'uin': str(qq_account.uin)
         }
-        r = requests.get(url, headers=QQConstants.HEADERS, params=parameters)
+        #r = requests.get(url, headers=QQConstants.HEADERS, params=parameters)
+        r = requests_session.get(url, headers=QQConstants.GET_HEADERS, params=parameters)
         HttpCookies.save_cookies(r.cookies)
         print r
         #print r.content

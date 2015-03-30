@@ -1,3 +1,4 @@
+# -*- coding:utf8 -*-
 __author__ = 'changyuf'
 
 import platform
@@ -13,18 +14,29 @@ class QQConstants:
 
     JSVER = "10114"
 
-
-
     URL_LOGIN_PAGE = "https://ui.ptlogin2.qq.com/cgi-bin/login?daid=164&target=self&style=5&mibao_css=m_webqq&appid=" + APPID + "&enable_qlogin=0&no_verifyimg=1&s_url=http%3A%2F%2Fweb2.qq.com%2Floginproxy.html&f_url=loginerroralert&strong_login=1&login_state=10&t=20140612002"
 
     URL_CHECK_VERIFY = "https://ssl.ptlogin2.qq.com/check?pt_tea=1&uin={0}&appid=" + APPID + "&js_ver=10114&js_type=0&login_sig={1}&u1=http%3A%2F%2Fweb2.qq.com%2Floginproxy.html&r={2}"
 
-    HEADERS = {
-    'Accept': '*/*',
-    'Accept-Encoding': 'gzip,deflate,sdch',
-    'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6',
-    'Connection': 'keep-alive',
-    'Content-Type': 'utf-8',
-    'User-Agent':USER_AGENT,
+    GET_HEADERS = {
+        'Accept': '*/*',
+        'Accept-Encoding': 'gzip,deflate,sdch',
+        'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6',
+        'Connection': 'keep-alive',
+        'Content-Type': 'utf-8',
+        'User-Agent': USER_AGENT,
+    }
+
+    POST_HEADERS = {
+        "Accept": "*/*",
+        "Accept-Encoding": "gzip,deflate,sdch",
+        "Accept-Language": "zh-CN,zh;q=0.8,en;q=0.6",
+        "Content-type": "application/x-www-form-urlencoded",
+        'Accept-Language': 'zh-CN,zh;q=0.8',
+        'User-Agent': USER_AGENT,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Connection": "keep-alive",
+        "Cache-Control": "no-cache",
+        "Referer": REFFER
     }
 

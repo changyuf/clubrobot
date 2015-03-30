@@ -10,11 +10,12 @@ class CheckLoginSigAction:
         pass
 
     @staticmethod
-    def check_login_sig(url):
+    def check_login_sig(url, requests_session):
         print ""
         print "start check_login_sig"
         #print "URL in check_login_sig:" + url
-        r = requests.get(url, headers=QQConstants.HEADERS)
+        #r = requests.get(url, headers=QQConstants.HEADERS)
+        r = requests_session.get(url, headers=QQConstants.GET_HEADERS)
         #print r.content
         print r.headers
         print r.cookies

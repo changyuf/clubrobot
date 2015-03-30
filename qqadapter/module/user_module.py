@@ -11,18 +11,23 @@ class UserModule(object):
         pass
 
     @staticmethod
-    def get_friend_info(qq_session, user):
+    def get_friend_info(qq_session, user, requests_session):
         #URL_GET_FRIEND_INFO
         url = "http://s.web2.qq.com/api/get_friend_info2"
         parameters = {
-            'tuin': user.uin,
+            'tuin': str(user.uin),
             'verifysession':"",
             'code': '',
             'vfwebqq':qq_session.vfwebqq,
             't': str(int(time.time()))
         }
-        response = requests.session().get(url, params=parameters, headers=QQConstants.HEADERS)
+        #response = requests.session().get(url, params=parameters, headers=QQConstants.HEADERS)
+        response = requests_session.get(url, params=parameters, headers=QQConstants.GET_HEADERS)
 
+        print "response for get_friend_info"
+        print response.content
+
+        print "response.json:"
         print response.json()
 
 

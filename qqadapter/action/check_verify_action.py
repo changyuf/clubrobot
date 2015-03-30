@@ -10,9 +10,10 @@ from qqadapter.utilities.utilities import HttpCookies
 
 class CheckVerifyAction:
     @staticmethod
-    def check_verify(session, user):
-        url = QQConstants.URL_CHECK_VERIFY.format(user, session.login_sig, random.random())
-        r = requests.get(url, headers=QQConstants.HEADERS)
+    def check_verify(qq_session, user, requests_session):
+        url = QQConstants.URL_CHECK_VERIFY.format(user, qq_session.login_sig, random.random())
+        #r = requests.get(url, headers=QQConstants.HEADERS)
+        r = requests_session.get(url, headers=QQConstants.GET_HEADERS)
 
         #print r.content
         #print r.cookies

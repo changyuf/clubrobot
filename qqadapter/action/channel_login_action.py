@@ -40,19 +40,7 @@ class ChannelLoginAction:
 
         #print "post_data in channel_login_action:" + post_data
 
-        ExploereHEADERS = {
-            "Accept": "*/*",
-            "Accept-Encoding": "gzip,deflate,sdch",
-            "Accept-Language": "zh-CN,zh;q=0.8,en;q=0.6",
-            "Content-type": "application/x-www-form-urlencoded",
-            #'Content-type': 'application/json',
-            'Accept-Language': 'zh-CN,zh;q=0.8',
-            'User-Agent': QQConstants.USER_AGENT,
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Connection": "keep-alive",
-            "Cache-Control": "no-cache",
-            "Referer": QQConstants.REFFER
-        }
+
         try:
             # requests_session.headers['Referer'] = QQConstants.REFFER
             # hder = QQConstants.HEADERS
@@ -70,9 +58,8 @@ class ChannelLoginAction:
                 "psessionid": qq_session.session_id
             })
             post_data = "r=%s" % urllib.quote(payload)
-            response = requests.post(url,  data=post_data, headers=ExploereHEADERS, cookies=cookie)
-
-
+            #response = requests.post(url,  data=post_data, headers=ExploereHEADERS, cookies=cookie)
+            response = requests_session.post(url,  data=post_data, headers=QQConstants.POST_HEADERS)
             print response.content
 
             data = json.loads(response.text, encoding='utf-8')
@@ -83,8 +70,8 @@ class ChannelLoginAction:
                 )
 
             ret = data["result"]
-            account.uin = ret["uin"]
-            account.fake_qq = ret["uin"]
+            account.uin = str(ret["uin"])
+            account.fake_qq = str(ret["uin"])
             account.status = ret["status"]
             qq_session.session_id = ret["psessionid"]
             qq_session.vfwebqq = ret["vfwebqq"]
