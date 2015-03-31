@@ -10,7 +10,7 @@ class DBModule:
         self.user = user
         self.password = password
         self.data_base = data_base
-        self.db = MySQLdb.connect(host, user, password, data_base)
+        self.db = MySQLdb.connect(host, user, password, data_base, charset='utf8', use_unicode=True)
 
     def insert_user(self, user):
         cursor = self.db.cursor()
