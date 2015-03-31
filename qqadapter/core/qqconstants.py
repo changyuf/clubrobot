@@ -8,7 +8,8 @@ class QQConstants:
     USER_AGENT = "Mozilla/5.0 (%(os_platform)s; %(os_arch)s) AppleWebKit/537.36 (KHTML, like Gecko)  IQQ Client/1.2 dev Safari/537.36" % {
         'os_platform': platform.platform(), 'os_arch': platform.machine()}
 
-    REFFER = "http://d.web2.qq.com/proxy.html?v=20140612002&callback=1&id=3"
+    #REFFER = "http://d.web2.qq.com/proxy.html?v=20140612002&callback=1&id=3"
+    REFFER = "http://d.web2.qq.com/proxy.html?v=20130916001&callback=1&id=2"
 
     APPID = "1003903"
 
@@ -25,13 +26,15 @@ class QQConstants:
         'Connection': 'keep-alive',
         'Content-Type': 'utf-8',
         'User-Agent': USER_AGENT,
+        "Referer": REFFER
     }
 
     POST_HEADERS = {
         "Accept": "*/*",
         "Accept-Encoding": "gzip,deflate,sdch",
         "Accept-Language": "zh-CN,zh;q=0.8,en;q=0.6",
-        "Content-type": "application/x-www-form-urlencoded",
+        #"Content-type": "application/x-www-form-urlencoded",
+        "Content-type":"application/x-www-form-urlencoded; charset=UTF-8",
         'Accept-Language': 'zh-CN,zh;q=0.8',
         'User-Agent': USER_AGENT,
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",

@@ -49,6 +49,14 @@ class TestProperty(object):
 from qqadapter.core.qqconstants import QQConstants
 
 if __name__ == "__main__":
+    text = '''中国
+    人民'''
+    content = '[\\"%s\\",[\\"font\\",{\\"name\\":\\"宋体\\",\\"size\\":10,\\"style\\":[0,0,0],\\"color\\":\\"000000\\"}]]' % text
+    print content
+    exit()
+    t = datetime.datetime.fromtimestamp(1427720427353)
+    print t
+    exit()
 
     response = '{"retcode":0,"result":{"uin":3047296752,"cip":1928459678,"index":1075,"port":48324,"status":"online","vfwebqq":"fc3fa781b5bee59093f591c1209008a2a730c51fd3f08886fa5797ba21448c0cff93b02858f28570","psessionid":"8368046764001d636f6e6e7365727665725f77656271714031302e3133392e372e31363400001e04000000c0036e0400f00ea2b56d0000000a404e615935786a44666c6d00000028fc3fa781b5bee59093f591c1209008a2a730c51fd3f08886fa5797ba21448c0cff93b02858f28570","user_state":0,"f":0}}'
     data = json.loads(response, encoding='utf-8')

@@ -18,7 +18,7 @@ class HttpCookies:
 
     @staticmethod
     def save_cookies(cookie_jar):
-        HttpCookies.dump(cookie_jar)
+        #HttpCookies.dump(cookie_jar)
         for c in cookie_jar:
             args = dict(vars(c).items())
             args['rest'] = args['_rest']

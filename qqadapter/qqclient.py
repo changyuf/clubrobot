@@ -84,6 +84,13 @@ class QQClient:
 
         UserModule.get_friend_info(self.qq_session, self.account, self.request_session)
         self.group_module.get_group_list()
+        print ""
+        print "开始获取群详细信息"
+        for group in self.store.group_map.values():
+            print group.name
+            self.group_module.get_group_info(group)
+        print "获取群详细信息结束"
+
         self.category_module.get_category_list()
         self.begin_poll_message()
 
@@ -125,8 +132,9 @@ class QQClient:
 
 
 if __name__ == "__main__":
-    #client = QQClient('2899530487', '123456789')
+    client = QQClient('2899530487', '123456789')
     #client = QQClient('3106426008', 'leepet123')
-    client = QQClient('3047296752', '123456789')
+    #client = QQClient('3047296752', '123456789')
     # 3047296752
+    #3173831764
     client.login()

@@ -68,19 +68,26 @@ class GroupModule:
             't': str(int(time.time()))
         }
 
-        response = self.requests_session.get(url, headers=QQConstants.GET_HEADERS, params=parameters)
+        response = self.request_session.get(url, headers=QQConstants.GET_HEADERS, params=parameters)
         print response
         data = json.loads(response.text, encoding='utf-8')
+        print data
+
+        if not data:
+            print "get_group_info failed."
+            return False
+
         if data["retcode"] != 0:
-            print "get group list failed.", data["retcode"], data["errmsg"]
-        return False
+            print "get group list failed.", "retcode:", data["retcode"], "errmsg:", data.get("errmsg")
+            return False
 
         results = data["result"]
-        self.__parse_grouop_info_response(results, group)
+        GroupModule.parse_group_info(results, group)
 
         return True
 
-    def __parse_group_info_response(self, results, group):
+    @staticmethod
+    def parse_group_info(results, group):
         ginfo = results["ginfo"]
         group.memo = ginfo.get("memo")
         group.level = ginfo.get("level")
@@ -100,56 +107,15 @@ class GroupModule:
         # result/minfo
         minfos = results["minfo"]
         for minfo in minfos:
-            uin = str(minfos.get("uin"))
+            uin = str(minfo.get("uin"))
             member = group.get_member_by_uin(uin)
-            member.setNickname(minfo.get("nick"))
-            member.setProvince(minfo.get("province"))
-            member.setCountry(minfo.get("country"))
-            member.setCity(minfo.get("city"));
-            member.setGender(minfo.get("gender"))
+            member.nick_name = minfo.get("nick")
+            member.province = minfo.get("province")
+            member.country = minfo.get("country")
+            member.city = minfo.get("city")
+            member.gender = minfo.get("gender")
+            print "type of member.gender", type(member.gender)
+
 
         return True
 
-# // result / stats
-#         JSONArray
-#         stats = json.getJSONArray("stats");
-#         for (int i=0; i < stats.length(); i++){
-#         // 下面重新设置最新状态
-#         JSONObject
-#         stat = stats.getJSONObject(i);
-#         QQGroupMember
-#         member = group.getMemberByUin(stat.getLong("uin"));
-#         member.setClientType(QQClientType.valueOfRaw(stat.getInt("client_type")));
-#         member.setStatus(QQStatus.valueOfRaw(stat.getInt("stat")));
-#
-#     }
-#
-#     // results / cards
-#     if (json.has("cards"))
-#     {
-#     JSONArray
-#     cards = json.getJSONArray("cards");
-#     for (int i=0; i < cards.length(); i++){
-#     JSONObject card = cards.getJSONObject(i);
-#     QQGroupMember member = group.getMemberByUin(card.getLong("muin"));
-#     if ( card != null & & card.has("card") & & member != null ) {
-#     member.setCard(card.get("card"));
-#     }
-#     }
-#
-# }
-#
-# // results / vipinfo
-# JSONArray
-# vipinfos = json.getJSONArray("vipinfo");
-# for (int
-# i = 0;
-# i < vipinfos.length();
-# i + +){
-# JSONObject
-# vipinfo = vipinfos.getJSONObject(i);
-# QQGroupMember
-# member = group.getMemberByUin(vipinfo.getLong("u"));
-# member.setVipLevel(vipinfo.getInt("vip_level"));
-# member.setVip(vipinfo.getInt("is_vip") == 1);
-# }

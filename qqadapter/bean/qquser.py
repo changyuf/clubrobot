@@ -14,8 +14,8 @@ class QQUser:
         # fake_qq is qq in java
         self.qq = None
         self.status = None
-        self.client_type = None # 客户类型
-        #private QQLevel level = None	#等级
+        self.client_type = None  # 客户类型
+        # private QQLevel level = None	#等级
         self.loginDate = None  # 登录时间
         self.nick_name = ''  # 昵称
         self.sign = None  # 个性签名
@@ -32,9 +32,9 @@ class QQUser:
         #private int stat = None # 统计
         #private boolean isVip = None # 是否为VIP
         #private int vipLevel = None # VIP等级
-        #self.country = None # 国家
-        #self.province = None # 省
-        #self.city = None # 城市
+        self.country = None  # 国家
+        self.province = None  # 省
+        self.city = None # 城市
         self.personal = None  # 个人说明
         #self.occupation  # 职业
         #private int chineseZodiac = None # 生肖

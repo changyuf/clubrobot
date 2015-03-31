@@ -11,6 +11,7 @@ from qqadapter.bean.qq_group import QQGroup
 from qqadapter.bean.qq_message import QQMessage
 from qqadapter.bean.qq_group_member import QQGroupMember
 from qqadapter.module.user_module import UserModule
+from qqadapter.module.chat_module import ChatModule
 
 
 class PollMessageAction:
@@ -20,6 +21,9 @@ class PollMessageAction:
         self.account = account
         self.store = store
         self.group_module = group_module
+
+        # for test
+        self.chat_module = ChatModule(qq_session, request_session, account, store, group_module)
 
     def poll_message(self):
         response = self.__get_response()
@@ -64,6 +68,12 @@ class PollMessageAction:
             elif poll_type == "message":
                 # 好友消息
                 msg = self.__process_buddy_message(poll_data)
+                new_msg = QQMessage()
+                new_msg.to_user = msg.from_user
+                new_msg.from_user = msg.to_user
+                new_msg.message = msg.message
+                new_msg.type = msg.type
+                self.chat_module.send_message(new_msg)
             elif poll_type == "group_message":
                 # 群消息
                 msg = self.__process_group_message(poll_data)
@@ -140,8 +150,9 @@ class PollMessageAction:
         msg = QQMessage()
         msg.id = poll_data["msg_id"]
         msg.id2 = poll_data["msg_id2"]
-        msg.content_list = poll_data["content"]
+        # msg.content_list = poll_data["content"]
         # msg.parseContentList(poll_data.getJSONArray("content").toString());
+        msg.parse_content_list(poll_data["content"])
         msg.type = QQMessage.Type.BUDDY_MSG
         msg.to_user = self.account
         msg.from_user = self.store.buddy_map[from_uin]
@@ -167,7 +178,8 @@ class PollMessageAction:
         if group.gid <= 0:
             group.gid = group_id
 
-        msg.content_list = poll_data["content"]
+        #msg.content_list = poll_data["content"]
+        msg.parse_content_list(poll_data["content"])
         msg.type = QQMessage.Type.GROUP_MSG
         msg.group = group
         msg.to_user = self.account
@@ -179,7 +191,7 @@ class PollMessageAction:
             msg.from_user = member
             group.members.append(member)
 
-            UserModule.get_stranger_info(self.qq_session, member, self.requests_session)
+            UserModule.get_stranger_info(self.qq_session, member, self.request_session)
 
         return msg
 
