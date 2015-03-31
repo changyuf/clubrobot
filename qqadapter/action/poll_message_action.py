@@ -67,7 +67,7 @@ class PollMessageAction:
                 print "好友 ", buddy.nick_name, "正在输入"
             elif poll_type == "message":
                 # 好友消息
-                msg = self.__process_buddy_message(poll_data)
+                msg = self.__parse_buddy_message(poll_data)
                 new_msg = QQMessage()
                 new_msg.to_user = msg.from_user
                 new_msg.from_user = msg.to_user
@@ -76,7 +76,8 @@ class PollMessageAction:
                 self.chat_module.send_message(new_msg)
             elif poll_type == "group_message":
                 # 群消息
-                msg = self.__process_group_message(poll_data)
+                msg = self.__parse_group_message(poll_data)
+                self.__process_group_message(msg)
             elif poll_type == "discu_message":
                 # 讨论组消息
                 pass
@@ -131,7 +132,7 @@ class PollMessageAction:
             if msg:
                 msg.dump()
 
-    def __process_buddy_message(self, poll_data):
+    def __parse_buddy_message(self, poll_data):
         from_uin = str(poll_data["from_uin"])
         if not self.store.buddy_map.get(from_uin):  # 消息来自陌生人
             # QQUser member = store.getStrangerByUin(fromUin); # 搜索陌生人列表
@@ -160,7 +161,7 @@ class PollMessageAction:
 
         return msg
 
-    def __process_group_message(self, poll_data):
+    def __parse_group_message(self, poll_data):
         msg = QQMessage()
         msg.id = poll_data["msg_id"]
         msg.id2 = poll_data["msg_id2"]
@@ -194,6 +195,39 @@ class PollMessageAction:
             UserModule.get_stranger_info(self.qq_session, member, self.request_session)
 
         return msg
+
+    def __process_group_message(self, msg):
+        group_name = msg.group.name
+        if isinstance(group_name, unicode):
+            group_name = group_name.encode('utf8')
+        print "from group:", group_name
+        print type("运动测试")
+        if group_name == "运动测试":
+            text = msg.message
+            if isinstance(text, unicode):
+                text = text.encode('utf-8')
+            if text.startswith("@小秘书"):
+                msg.message = "叫我干什么，我现在还没长大，什么都干不了"
+                self.__reply_group_message(msg)
+            #self.__reply_group_message(msg)
+        if group_name == "后沙峪友瑞羽毛球群":
+            text = msg.message
+            if isinstance(text, unicode):
+                text = text.encode('utf-8')
+            if text.startswith("@小秘书"):
+                msg.message = "叫我干什么，我现在还没长大，什么都干不了"
+                self.__reply_group_message(msg)
+
+
+    def __reply_group_message(self,msg):
+        new_msg = QQMessage()
+        new_msg.to_user = msg.from_user
+        new_msg.from_user = msg.to_user
+        new_msg.message = msg.message
+        new_msg.group = msg.group
+        new_msg.type = QQMessage.Type.GROUP_MSG
+        self.chat_module.send_message(new_msg)
+
 
 
 if __name__ == "__main__":

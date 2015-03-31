@@ -132,7 +132,8 @@ class QQClient:
 
 
 if __name__ == "__main__":
-    client = QQClient('2899530487', '123456789')
+    client = QQClient('3173831764', '123456789')
+    #client = QQClient('2899530487', '123456789')
     #client = QQClient('3106426008', 'leepet123')
     #client = QQClient('3047296752', '123456789')
     # 3047296752

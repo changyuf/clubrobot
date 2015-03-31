@@ -36,7 +36,7 @@ class GroupModule:
 
         data = json.loads(response.text, encoding='utf-8')
         if data["retcode"] != 0:
-            print "get group list failed.", data["retcode"], data["errmsg"]
+            print "get group list failed.", data["retcode"], data.get("errmsg")
             return False
 
         results = data["result"]

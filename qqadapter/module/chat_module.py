@@ -2,6 +2,7 @@
 __author__ = 'changyuf'
 
 import json
+import random
 import urllib
 from qqadapter.bean.qq_message import QQMessage
 from qqadapter.core.qqconstants import QQConstants
@@ -80,7 +81,7 @@ class ChatModule:
         #content = '[\"$s\",[\"font\",{\"name\":\"宋体\",\"size\":10,\"style\":[0,0,0],\"color\":\"000000\"}]]' % text
         #content = '[\\"%s\\",[\\"font\\",{\\"name\\":\\"宋体\\",\\"size\\":10,\\"style\\":[0,0,0],\\"color\\":\\"000000\\"}]]' % "无语"
         #print "content:", content
-        text = "中国好\n市民"
+        #text = "中国好\\n市民"
 
         #{"to":2754143906,"content":"[\"hi\",[\"font\",{\"name\":\"宋体\",\"size\":10,\"style\":[0,0,0],\"color\":\"000000\"}]]","face":558,"clientid":53999199,"msg_id":68900001,"psessionid":"8368046764001d636f6e6e7365727665725f77656271714031302e3133392e372e31363400002a8d00000143036e0400f00ea2b56d0000000a40315872377232714c646d00000028ac8fad9c82e24709d6a606cb2388fda292f49d8e7f73a36457414274a4d55f36dd204f1f704845be"}
         payload = {
@@ -90,7 +91,7 @@ class ChatModule:
             #"content":['\"hi\"',['\"font'\"',{'\"name\"':'\"宋体\"'','\"size\"'':10,'\"style\"'':[0,0,0],'\"color\"'':'\"000000\"'}]]
             #"content": ['\"hi\"'],
             #"content":[\\"hi\",[\\"font\\",{\\"name\\":\\u"宋体\",\\"size\\":10,\\"style\\":[0,0,0],\"color\":\"000000\"}]]
-            "msg_id": "91310001",
+            "msg_id": random.randint(10000000, 99999999),
             "clientid": self.qq_session.client_id,
             "psessionid": self.qq_session.session_id
         }
@@ -104,6 +105,7 @@ class ChatModule:
             # URL_SEND_GROUP_MSG
             url = "http://d.web2.qq.com/channel/send_qun_msg2"
             payload["group_uin"] = message.group.gin
+            payload["face"] = 558
         # json.put("key", session.getCfaceKey());
         # json.put("sig", session.getCfaceSig());
         elif message.type == QQMessage.Type.DISCUZ_MSG:
@@ -130,7 +132,7 @@ class ChatModule:
         print "post_data:", post_data
         # post_data = data = {"r": json.dumps(payload)}
         response = self.request_session.post(url, data=post_data, headers=QQConstants.POST_HEADERS)
-        print "cookies:"
-        HttpCookies.dump(self.request_session.cookies)
-        print "\n"
+        #print "cookies:"
+        #HttpCookies.dump(self.request_session.cookies)
+        #print "\n"
         print "Response for __do_send_message:", response.content
