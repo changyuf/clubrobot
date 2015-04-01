@@ -12,6 +12,9 @@ from qqadapter.bean.qq_message import QQMessage
 from qqadapter.bean.qq_group_member import QQGroupMember
 from qqadapter.module.user_module import UserModule
 from qqadapter.module.chat_module import ChatModule
+from qqadapter.module.db_module import DBModule
+
+from robot.message_processor import MessageProcessor
 
 
 class PollMessageAction:
@@ -24,6 +27,8 @@ class PollMessageAction:
 
         # for test
         self.chat_module = ChatModule(qq_session, request_session, account, store, group_module)
+        self.db = DBModule("104.131.158.219", "changyuf", "changyuf", "club_robot")
+        self.message_processor = MessageProcessor(self.chat_module, self.db)
 
     def poll_message(self):
         response = self.__get_response()
@@ -77,7 +82,8 @@ class PollMessageAction:
             elif poll_type == "group_message":
                 # 群消息
                 msg = self.__parse_group_message(poll_data)
-                self.__process_group_message(msg)
+                self.message_processor.process(msg)
+                #self.__process_group_message(msg)
             elif poll_type == "discu_message":
                 # 讨论组消息
                 pass

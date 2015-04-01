@@ -3,10 +3,19 @@ __metaclass__ = type
 __author__ = 'changyuf'
 
 from enum import Enum
+import random
 
 
 class QQUser:
     STATUS_DICT = {"online": 10, "offline": 20, "away": 30, "hidden": 40, "busy": 50, "callme": 60, "silent": 70}
+    COMMENT_DICT = {
+        0 : "本人很懒，不想写自我评价",
+        1 : "本人智商不够，不会写自我评价",
+        2 : "本人很NB，不屑于写自我评价",
+        3 : "本人太平凡，怎么评价都行",
+        4 : "一个字形容本人就是NB，两个字形容本人就是吹NB"
+    }
+
 
     def __init__(self):
         self.uin_hex = None
@@ -20,6 +29,13 @@ class QQUser:
         self.nick_name = ''  # 昵称
         self.sign = None  # 个性签名
         self.gender = None  # 性别
+        # the following field is used for qq robot
+        self.balance = random.randint(1, 9999999)
+        self.club_level = random.randint(0, 5)
+        self.activity_times = 0
+        self.accumulate_points = 0
+        self.comments = self.COMMENT_DICT[random.randint(0, 4)]
+        self.other_comments = "没有人愿意评价此人"
         #private Date birthday = None # 出生日期
         #self.phone = None # 电话
         #self.mobile = None # 手机

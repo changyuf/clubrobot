@@ -4,6 +4,12 @@ __author__ = 'changyuf'
 import cookielib
 
 
+def to_str(s):
+    if isinstance(s, unicode):
+        return s.encode('utf8')
+    return s
+
+
 class WebQQException(Exception):
     pass
 
@@ -11,7 +17,7 @@ class WebQQException(Exception):
 class HttpCookies:
     # file_name = "./http_cookies.txt"
     cookie_jar = cookielib.LWPCookieJar(filename="./http_cookies2.txt")
-    #cookie_jar = None
+    # cookie_jar = None
 
     def __init__(self):
         pass

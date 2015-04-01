@@ -5,10 +5,11 @@ import time
 import json
 import urllib
 from qqadapter.utilities.qq_encryptor import QQEncryptor
-from qqadapter.utilities.utilities import HttpCookies, WebQQException
+from qqadapter.utilities.utilities import HttpCookies, to_str
 from qqadapter.core.qqconstants import QQConstants
 from qqadapter.bean.qq_group import QQGroup
 from qqadapter.bean.qq_group_member import QQGroupMember
+from qqadapter.module.db_module import DBModule
 
 
 # 群模块，处理群相关操作
@@ -47,7 +48,7 @@ class GroupModule:
             group.gin = g['gid']
             group.code = g["code"]
             group.flag = g["flag"]
-            group.name = g['name']
+            group.name = to_str(g['name'])
             self.store.group_map[group.code] = group
 
         for mask in group_mask_list:
@@ -88,6 +89,7 @@ class GroupModule:
 
     @staticmethod
     def parse_group_info(results, group):
+        #db = DBModule("104.131.158.219", "changyuf", "changyuf", "club_robot")
         ginfo = results["ginfo"]
         group.memo = ginfo.get("memo")
         group.level = ginfo.get("level")
@@ -109,12 +111,21 @@ class GroupModule:
         for minfo in minfos:
             uin = str(minfo.get("uin"))
             member = group.get_member_by_uin(uin)
-            member.nick_name = minfo.get("nick")
-            member.province = minfo.get("province")
-            member.country = minfo.get("country")
-            member.city = minfo.get("city")
-            member.gender = minfo.get("gender")
-            print "type of member.gender", type(member.gender)
+            member.qq = uin
+            member.nick_name = to_str(minfo.get("nick"))
+            member.province = to_str(minfo.get("province"))
+            member.country = to_str(minfo.get("country"))
+            member.city = to_str(minfo.get("city"))
+            gender = to_str(minfo.get("gender"))
+            if gender == "female":
+                member.gender = "女"
+            elif gender == "male":
+                member.gender = "男"
+            else:
+                member.gender = "人妖"
+            print "member.gender", member.gender
+
+            #db.insert_user(member)
 
 
         return True

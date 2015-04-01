@@ -75,6 +75,7 @@ class ChatModule:
         text = message.message
         if isinstance(text, unicode):
             text = text.encode('utf8')
+        #text.replace('\n', '\\n')
         #content = [text.replace('"', '\\"'), ["font", MSG_FONT]]
         #text = '\"' + text + '\"'
         #content = "[%s, MSG_FONT]" % text
