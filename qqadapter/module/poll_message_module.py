@@ -1,31 +1,15 @@
 # -*- coding:utf8 -*-
 __author__ = 'changyuf'
 
-# deprecated file
-
 import json
-import datetime
 import urllib
+import logging
 from qqadapter.utilities.qq_encryptor import QQEncryptor
-from qqadapter.utilities.utilities import HttpCookies, WebQQException
-from qqadapter.core.qqconstants import QQConstants
-from qqadapter.bean.qq_group import QQGroup
-from qqadapter.bean.qq_message import QQMessage
-from qqadapter.bean.qq_group_member import QQGroupMember
-from qqadapter.module.user_module import UserModule
-from qqadapter.module.chat_module import ChatModule
+from qqadapter.utilities.utilities import WebQQException
 
-
-class PollMessageAction:
-    def __init__(self, qq_session, request_session, account, store, group_module):
-        self.qq_session = qq_session
-        self.request_session = request_session
-        self.account = account
-        self.store = store
-        self.group_module = group_module
-
-        # for test
-        self.chat_module = ChatModule(qq_session, request_session, account, store, group_module)
+class PollMessageModule:
+    def __init__(self, context):
+        self.context = context
 
     def poll_message(self):
         response = self.__get_response()
@@ -35,23 +19,25 @@ class PollMessageAction:
         # URL_POLL_MSG
         url = "http://d.web2.qq.com/channel/poll2"
 
-        ptwebqq = HttpCookies.get_value('ptwebqq')
-        hash_value = QQEncryptor.hash(self.account.uin, ptwebqq)
+        ptwebqq = self.context.httpService.get_cookie_value('ptwebqq')
+        hash_value = QQEncryptor.hash(self.context.account.uin, ptwebqq)
         payload = json.dumps({
-            "clientid": self.qq_session.client_id,
-            "psessionid": self.qq_session.session_id,
+            "clientid": self.context.qq_session.client_id,
+            "psessionid": self.context.qq_session.session_id,
             "key": 0,
             "ids": []
         })
         post_data = "r=%s&clientid=%s&psessionid=%s" % (
-            urllib.quote(payload), self.qq_session.client_id, self.qq_session.session_id)
-        response = self.request_session.post(url, data=post_data, headers=QQConstants.POST_HEADERS)
-        print "Response for poll_message:", response.content
+            urllib.quote(payload), self.context.qq_session.client_id, self.context.qq_session.session_id)
+
+        response = self.context.http_service.post(url, post_data)
+        if not response:
+            raise WebQQException("get_group_list failed")
+        logging.info("response of POLL_MESSAGE:%s", response.content)
 
         return response
 
     def __parse_response(self, response):
-        #data = json.loads(response.text, encoding='utf-8')
         data = response.json()
         if data["retcode"] != 0:
             print "get group list failed.", data["retcode"], data["errmsg"]
@@ -65,17 +51,10 @@ class PollMessageAction:
             msg = None
             if poll_type == "input_notify":
                 from_uin = poll_data["from_uin"]
-                buddy = self.store.buddy_map[str(from_uin)]
-                print "好友 ", buddy.nick_name, "正在输入"
+                buddy = self.context.store.buddy_map[str(from_uin)]
             elif poll_type == "message":
                 # 好友消息
                 msg = self.__parse_buddy_message(poll_data)
-                new_msg = QQMessage()
-                new_msg.to_user = msg.from_user
-                new_msg.from_user = msg.to_user
-                new_msg.message = msg.message
-                new_msg.type = msg.type
-                self.chat_module.send_message(new_msg)
             elif poll_type == "group_message":
                 # 群消息
                 msg = self.__parse_group_message(poll_data)
@@ -197,60 +176,3 @@ class PollMessageAction:
             UserModule.get_stranger_info(self.qq_session, member, self.request_session)
 
         return msg
-
-    def __process_group_message(self, msg):
-        group_name = msg.group.name
-        if isinstance(group_name, unicode):
-            group_name = group_name.encode('utf8')
-        print "from group:", group_name
-        print type("运动测试")
-        if group_name == "运动测试":
-            text = msg.message
-            if isinstance(text, unicode):
-                text = text.encode('utf-8')
-            if text.startswith("@小秘书"):
-                msg.message = "叫我干什么，我现在还没长大，什么都干不了"
-                self.__reply_group_message(msg)
-            #self.__reply_group_message(msg)
-        if group_name == "后沙峪友瑞羽毛球群":
-            text = msg.message
-            if isinstance(text, unicode):
-                text = text.encode('utf-8')
-            if text.startswith("@小秘书"):
-                msg.message = "叫我干什么，我现在还没长大，什么都干不了"
-                self.__reply_group_message(msg)
-
-
-    def __reply_group_message(self,msg):
-        new_msg = QQMessage()
-        new_msg.to_user = msg.from_user
-        new_msg.from_user = msg.to_user
-        new_msg.message = msg.message
-        new_msg.group = msg.group
-        new_msg.type = QQMessage.Type.GROUP_MSG
-        self.chat_module.send_message(new_msg)
-
-
-
-if __name__ == "__main__":
-    text = {"retcode": 0,
-                "result":
-                    [{"poll_type": "group_message",
-                      "value":
-                          {"msg_id": 63178, "from_uin": 109394525, "to_uin": 3047296752,
-                           "msg_id2": 586542, "msg_type": 43, "reply_ip": 180061927,
-                           "group_code": 1220611493, "send_uin": 2301259461, "seq": 15,
-                           "time": 1427704997, "info_seq": 431580233,
-                           "content": [["font",
-                                        {"size": 10,
-                                         "color": "000000",
-                                         "style": [
-                                             0, 0,
-                                             0],
-                                         "name": "\u5B8B\u4F53"}],
-                                       "hi "]}}]}
-    data = json.loads(text, encoding='utf-8')
-
-
-
-

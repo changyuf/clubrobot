@@ -2,38 +2,33 @@
 __author__ = 'changyuf'
 
 import time
-import requests
-from qqadapter.core.qqconstants import QQConstants
-from qqadapter.utilities.utilities import HttpCookies, WebQQException
+import logging
+from qqadapter.utilities.utilities import WebQQException
 
 class UserModule(object):
-    def __init__(self):
-        pass
+    def __init__(self, context):
+        self.context = context
 
-    @staticmethod
-    def get_friend_info(qq_session, user, requests_session):
+    def get_friend_info(self, user):
         #URL_GET_FRIEND_INFO
         url = "http://s.web2.qq.com/api/get_friend_info2"
         parameters = {
             'tuin': str(user.uin),
             'verifysession':"",
             'code': '',
-            'vfwebqq':qq_session.vfwebqq,
+            'vfwebqq':self.context.qq_session.vfwebqq,
             't': str(int(time.time()))
         }
-        #response = requests.session().get(url, params=parameters, headers=QQConstants.HEADERS)
-        response = requests_session.get(url, params=parameters, headers=QQConstants.GET_HEADERS)
 
-        print "response for get_friend_info"
-        print response.content
+        response = self.context.http_service.get(url, parameters)
+        if not response:
+            raise WebQQException("get_friend_info failed")
+        logging.info("response of GET_FRIEND_INFO:%s", response.content)
 
-        print "response.json:"
-        print response.json()
         data =  response.json()
         UserModule.__parse_user_info(data, user)
 
-    @staticmethod
-    def get_stranger_info(qq_session, user, requests_session):
+    def get_stranger_info(self, user):
         # URL_GET_STRANGER_INFO
         url = "http://s.web2.qq.com/api/get_stranger_info2"
         parameters = {
@@ -41,23 +36,22 @@ class UserModule(object):
             'verifysession':"",
             'gid':0,
             'code': '',
-            'vfwebqq':qq_session.vfwebqq,
+            'vfwebqq':self.context.qq_session.vfwebqq,
             't': str(int(time.time()))
         }
-        response = requests_session.get(url, params=parameters, headers=QQConstants.GET_HEADERS)
 
-        print "response for get_stranger_info"
-        print response.content
+        response = self.context.http_service.get(url, parameters)
+        if not response:
+            raise WebQQException("get_friend_info failed")
+        logging.info("response of GET_STRANGER_INFO:%s", response.content)
 
-        print "response.json:"
-        print response.json()
         data =  response.json()
         UserModule.__parse_user_info(data, user)
 
     @staticmethod
     def __parse_user_info(data, user):
         if data["retcode"] != 0:
-            print "get user info failed. retcode:", data["retcode"]
+            logging("get user info failed. retcode:%s", data["retcode"])
             return False
 
         result = data["result"]
@@ -74,7 +68,7 @@ class UserModule(object):
         # user.setHomepage(obj.getString("homepage"));
         # user.setStat(obj.getInt("stat"));
         # if(obj.has("vip_info")) {
-        #     user.setVipLevel(obj.getInt("vip_info")); // VIP等级 0为非VIP
+        #     user.setVipLevel(obj.getInt("vip_info")); # VIP等级 0为非VIP
         # }
         # user.setCountry(obj.getString("country"));
         # user.setCity(obj.getString("city"));
@@ -88,5 +82,6 @@ class UserModule(object):
         # if (obj.has("client_type")) {
         #     user.setClientType(QQClientType.valueOfRaw(obj.getInt("client_type")));
         # }
+        return True
 
 

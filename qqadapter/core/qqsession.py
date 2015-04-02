@@ -10,7 +10,7 @@ class QQSession(object):
         self.session_id = ""
         self.vfwebqq = None
         self.ptwebqq = None
-        self.login_sig = None
+        #self.login_sig = None
         self.cface_key = None  # 上传群图片时需要
         self.cface_sig = None  # 上传群图片时需要
         self.email_auth_key = None  # 邮箱登录认证
