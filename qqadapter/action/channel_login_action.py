@@ -1,6 +1,8 @@
 # -*- coding:utf8 -*-
 __author__ = 'changyuf'
 
+# deprecated files
+
 import requests
 import json
 import random

@@ -1,12 +1,17 @@
 # -*- coding:utf8 -*-
 __author__ = 'changyuf'
 
+import logging
 import time
 import json
 import urllib
 from qqadapter.utilities.qq_encryptor import QQEncryptor
+<<<<<<< HEAD
 from qqadapter.utilities.utilities import HttpCookies, to_str
 from qqadapter.core.qqconstants import QQConstants
+=======
+from qqadapter.utilities.utilities import WebQQException
+>>>>>>> 0deed5a804bd0dd61da71038009468b688a4cfa6
 from qqadapter.bean.qq_group import QQGroup
 from qqadapter.bean.qq_group_member import QQGroupMember
 from qqadapter.module.db_module import DBModule
@@ -14,30 +19,29 @@ from qqadapter.module.db_module import DBModule
 
 # 群模块，处理群相关操作
 class GroupModule:
-    def __init__(self, qq_session, request_session, account, store):
-        self.qq_session = qq_session
-        self.request_session = request_session
-        self.account = account
-        self.store = store
+    def __init__(self, context):
+        self.context = context
 
     # 获取群列表
     def get_group_list(self):
         # URL_GET_GROUP_NAME_LIST
         url = "http://s.web2.qq.com/api/get_group_name_list_mask2"
 
-        ptwebqq = HttpCookies.get_value('ptwebqq')
-        hash_value = QQEncryptor.hash(self.account.uin, ptwebqq)
+        ptwebqq = self.context.http_service.get_cookie_value('ptwebqq')
+        hash_value = QQEncryptor.hash(self.context.account.uin, ptwebqq)
         payload = json.dumps({
             "vfwebqq": self.qq_session.vfwebqq,
             "hash": hash_value,
         })
         post_data = "r=%s" % urllib.quote(payload)
-        response = self.request_session.post(url, data=post_data, headers=QQConstants.POST_HEADERS)
-        print response.content
+        response = self.context.http_service.post(url, post_data)
+        if not response:
+            raise WebQQException("get_group_list failed")
+        logging.info("response of GET_GROUP_LIST:%s", response.content)
 
         data = json.loads(response.text, encoding='utf-8')
         if data["retcode"] != 0:
-            print "get group list failed.", data["retcode"], data.get("errmsg")
+            logging.error("get group list failed.retcode:%s,errmsg:%s", (data["retcode"], data.get("errmsg")))
             return False
 
         results = data["result"]
@@ -48,13 +52,18 @@ class GroupModule:
             group.gin = g['gid']
             group.code = g["code"]
             group.flag = g["flag"]
+<<<<<<< HEAD
             group.name = to_str(g['name'])
             self.store.group_map[group.code] = group
+=======
+            group.name = g['name']
+            self.context.store.group_map[group.code] = group
+>>>>>>> 0deed5a804bd0dd61da71038009468b688a4cfa6
 
         for mask in group_mask_list:
             gid = mask['gid']
             mask = mask['mask']
-            group = self.store.get_group_by_gin(gid)
+            group = self.context.store.get_group_by_gin(gid)
             if group:
                 group.mask = mask
 
@@ -69,17 +78,18 @@ class GroupModule:
             't': str(int(time.time()))
         }
 
-        response = self.request_session.get(url, headers=QQConstants.GET_HEADERS, params=parameters)
-        print response
+        response = self.context.http_service.get(url, parameters)
+        if not response:
+            raise WebQQException("get_group_list failed")
+        logging.info("response of GET_GROUP_LIST:%s", response.content)
         data = json.loads(response.text, encoding='utf-8')
-        print data
 
         if not data:
-            print "get_group_info failed."
+            logging.error("get_group_info failed.there is no json data return.")
             return False
 
         if data["retcode"] != 0:
-            print "get group list failed.", "retcode:", data["retcode"], "errmsg:", data.get("errmsg")
+            logging.error("get group info failed.retcode:%s,errmsg:%s", (data["retcode"], data.get("errmsg")))
             return False
 
         results = data["result"]
@@ -126,7 +136,6 @@ class GroupModule:
             print "member.gender", member.gender
 
             #db.insert_user(member)
-
 
         return True
 

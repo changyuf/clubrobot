@@ -3,6 +3,7 @@
 __author__ = 'changyuf'
 
 import requests
+import logging
 import time
 from qqadapter.core.qqsession import QQSession
 from qqadapter.action.get_login_sig_action import GetLoginSigAction
@@ -18,69 +19,69 @@ from qqadapter.module.group_module import GroupModule
 from qqadapter.module.category_module import CategoryModule
 from qqadapter.core.qqstore import QQStore
 from qqadapter.action.poll_message_action import PollMessageAction
+from qqadapter.core.qqconstants import QQConstants
+from qqadapter.module.login_module import LoginModule
+from qqadapter.core.qq_context import QQContext
+from qqadapter.module.poll_message_module import PollMessageModule
 
 
 class QQClient:
     def __init__(self, user_name, password):
-        self.account = QQAccount(user_name, password)
-
-        self.qq_session = QQSession()
-        self.request_session = requests.session()
-        self.verify_code = None
-        self.store = QQStore()
-        self.group_module = GroupModule(self.qq_session, self.request_session, self.account, self.store)
+        self.context = QQContext(user_name, password)
+        self.group_module = GroupModule(self.context)
         self.category_module = CategoryModule(self.qq_session, self.request_session, self.account, self.store)
-
-        # self.uin = None
-        # self.session = requests.Session()
-        # self.session.headers.update(HEADERS)
-        # self.client_id = None
-        # self.session_id = None
-        # self.vfwebqq = None
-        #self.ptwebqq = None
-        #self.qqStatus = "offline"
-        #self.groupList = {}
+        self.login_module = LoginModule(self.context)
+        self.user_module = UserModule(self.context)
+        self.poll_message_module = PollMessageModule(self.context)
 
     def login(self):
-        if not self.__get_log_sig():
-            print "get log_sig failed"
-            return False
+        return self.login_module.login()
 
-        need_input_verify_code = self.__check_verify()
-        #web_login_ret = WebLoginAction.login(self.qq_session, self.account, self.verify_code, need_input_verify_code)
+    def get_friend_info(self, user):
+        return self.user_module.get_friend_info(user)
 
-        if not need_input_verify_code:
-            web_login_ret = WebLoginAction.login(self.qq_session, self.account, self.verify_code, self.request_session,False)
-            # flag = True
-            # while flag:
-            #     web_login_ret = WebLoginAction.login(self.qq_session, self.account, self.verify_code, False)
-            #     if web_login_ret[0] == '4': #页面过期，请重试
-            #         print web_login_ret[2]
-            #         time.sleep(5)
-            #         web_login_ret = WebLoginAction.login(self.qq_session, self.account, self.verify_code, False)
-            #     else:
-            #         flag = False
-        else:
-            self.verify_code = self.__read_verify_code('为了保证您账号的安全，请输入验证码中字符继续登录')
-            web_login_ret = WebLoginAction.login(self.qq_session, self.account, self.verify_code, self.request_session, True)
-            # web_login_ret = ('4', 'url', '为了保证您账号的安全，请输入验证码中字符继续登录')
-            # while web_login_ret[0] == '4':
-            #     self.verify_code = self.__read_verify_code(web_login_ret[2])
-            #     web_login_ret = WebLoginAction.login(self.qq_session, self.account, self.verify_code, True)
+    def get_stranger_info(self, user):
+        return self.user_module.get_stranger_info(user)
 
-        while web_login_ret[0] == '4':
-            self.verify_code = self.__read_verify_code(web_login_ret[2])
-            web_login_ret = WebLoginAction.login(self.qq_session, self.account, self.verify_code, self.request_session, True)
+    def poll_message(self):
+        if self.context.qq_session.state == QQSession.State.OFFLINE:
+            logging.error("client is already offline, can not poll message")
+            return None
+        ret = self.poll_message_module.poll_message()
+        retcode = ret[0]
+        if retcode == 0:
+            return ret[1]
 
-        if not web_login_ret[0] == '0':
-            return False
+        if retcode == 102:
+            # 接连正常，没有消息到达 {"retcode":102,"errmsg":""}
+            return None
 
-        check_result =  CheckLoginSigAction.check_login_sig(web_login_ret[1], self.request_session)
-        if not check_result[0]:
-            return False
+        if retcode == 110 or retcode == 109: # 客户端主动退出
+            self.context.qq_session.state = QQSession.State.OFFLINE
+        elif retcode == 116:
+            # 需要更新ptwebqq值，暂时不知道干嘛用的
+            # {"retcode":116,"p":"2c0d8375e6c09f2af3ce60c6e081bdf4db271a14d0d85060"}
+            # if (a.retcode === 116) alloy.portal.setPtwebqq(a.p)
+            self.context.qq_session.ptwebqq = ret[1] # "p"));
+        elif retcode == 121 or retcode == 120 or retcode == 100: # 121,120 : ReLinkFailure	100 : NotReLogin
+            # 服务器需求重新认证
+            # {"retcode":121,"t":"0"}
+            LOG.info("**** NEED_REAUTH retcode: " + retcode + " ****");
+            getContext().getSession().setState(QQSession.State.OFFLINE);
+            QQException ex = new QQException(QQException.QQErrorCode.INVALID_LOGIN_AUTH);
+            notifyActionEvent(QQActionEvent.Type.EVT_ERROR, ex);
+            return;
+            //notifyEvents.add(new QQNotifyEvent(QQNotifyEvent.Type.NEED_REAUTH, null));
+        } else {
 
-        if not ChannelLoginAction.channel_login(qq_session=self.qq_session, requests_session=self.request_session, account=self.account, cookie=check_result[1]):
-            return False
+            LOG.error("**Reply retcode to author**");
+            LOG.error("***************************");
+            LOG.error("Unknown retcode: " + retcode);
+            LOG.error("***************************");
+            // 返回错误，核心遇到未知retcode
+            // getContext().getSession().setState(QQSession.State.ERROR);
+            notifyEvents.add(new QQNotifyEvent(QQNotifyEvent.Type.UNKNOWN_ERROR, json));
+        }
 
         UserModule.get_friend_info(self.qq_session, self.account, self.request_session)
         self.group_module.get_group_list()
@@ -132,7 +133,12 @@ class QQClient:
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     client = QQClient('3173831764', '123456789')  #小秘书
+=======
+    logging.basicConfig(filename=QQConstants.LOG_FILE, level=logging.INFO)
+    client = QQClient('3173831764', '123456789')
+>>>>>>> 0deed5a804bd0dd61da71038009468b688a4cfa6
     #client = QQClient('2899530487', '123456789')
     #client = QQClient('3106426008', 'leepet123')
     #client = QQClient('3047296752', '123456789')

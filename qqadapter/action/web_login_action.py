@@ -1,13 +1,11 @@
 # -*- coding:utf8 -*-
-
 __author__ = 'changyuf'
 
-import requests
 import re
 from qqadapter.core.qqconstants import QQConstants
-from qqadapter.core.qqsession import QQSession
 from qqadapter.utilities.utilities import HttpCookies
 from qqadapter.utilities.qq_encryptor import QQEncryptor
+
 
 class WebLoginAction:
     def __init__(self):
@@ -19,7 +17,6 @@ class WebLoginAction:
         url = "https://ssl.ptlogin2.qq.com/login"
         parameters = WebLoginAction.__construct_parameters(qq_session, qq_account, verify_code, need_input_verify_code)
 
-        #r = requests.get(url, params=parameters)
         r = requests_session.get(url, params=parameters)
         HttpCookies.save_cookies(r.cookies)
 
@@ -29,7 +26,6 @@ class WebLoginAction:
 
         #REGXP_LOGIN
         regxp = "ptuiCB\('(\d+)','(\d+)','(.*?)','(\d+)','(.*?)', '(.*?)'\)"
-        #"ptui_checkVC\('(.*?)','(.*?)','(.*?)'(,\s*'(.*?)')?\)"
 
         m = re.search(regxp, r.content)
         result = m.group(1)

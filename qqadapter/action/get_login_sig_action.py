@@ -1,6 +1,8 @@
 # -*- coding:utf8 -*-
 __author__ = 'changyuf'
 
+# deprecated
+
 import requests
 import re
 import cookielib
