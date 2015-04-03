@@ -6,12 +6,7 @@ import time
 import json
 import urllib
 from qqadapter.utilities.qq_encryptor import QQEncryptor
-<<<<<<< HEAD
-from qqadapter.utilities.utilities import HttpCookies, to_str
-from qqadapter.core.qqconstants import QQConstants
-=======
-from qqadapter.utilities.utilities import WebQQException
->>>>>>> 0deed5a804bd0dd61da71038009468b688a4cfa6
+from qqadapter.utilities.utilities import WebQQException,to_str
 from qqadapter.bean.qq_group import QQGroup
 from qqadapter.bean.qq_group_member import QQGroupMember
 from qqadapter.module.db_module import DBModule
@@ -30,7 +25,7 @@ class GroupModule:
         ptwebqq = self.context.http_service.get_cookie_value('ptwebqq')
         hash_value = QQEncryptor.hash(self.context.account.uin, ptwebqq)
         payload = json.dumps({
-            "vfwebqq": self.qq_session.vfwebqq,
+            "vfwebqq": self.context.qq_session.vfwebqq,
             "hash": hash_value,
         })
         post_data = "r=%s" % urllib.quote(payload)
@@ -52,13 +47,8 @@ class GroupModule:
             group.gin = g['gid']
             group.code = g["code"]
             group.flag = g["flag"]
-<<<<<<< HEAD
             group.name = to_str(g['name'])
-            self.store.group_map[group.code] = group
-=======
-            group.name = g['name']
-            self.context.store.group_map[group.code] = group
->>>>>>> 0deed5a804bd0dd61da71038009468b688a4cfa6
+            self.context.store.add_group(group)
 
         for mask in group_mask_list:
             gid = mask['gid']
@@ -74,7 +64,7 @@ class GroupModule:
         url = "http://s.web2.qq.com/api/get_group_info_ext2"
         parameters = {
             'gcode': group.code,
-            'vfwebqq': self.qq_session.vfwebqq,
+            'vfwebqq': self.context.qq_session.vfwebqq,
             't': str(int(time.time()))
         }
 

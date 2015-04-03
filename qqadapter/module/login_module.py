@@ -22,7 +22,9 @@ class LoginModule:
 
     def login(self):
         self.__get_log_sig()
-        if self.__check_verify():
+        self.__check_verify()
+
+        if self.need_verify:
             self.verify_code = self.__read_verify_code('为了保证您账号的安全，请输入验证码中字符继续登录')
 
         web_login_ret = self.__web_login()
@@ -31,12 +33,11 @@ class LoginModule:
             web_login_ret = self.__web_login()
 
         if web_login_ret[0] != '0':
-            return False
+            raise WebQQException("Login failed. retcode:%d", web_login_ret[0] )
 
         self.__check_login_sig(web_login_ret[1])
 
-        self.__channel_login()
-
+        self.channel_login()
         return True
 
 
@@ -45,7 +46,7 @@ class LoginModule:
         response = self.context.http_service.get(url)
         if not response:
             raise WebQQException("__get_log_sig failed")
-        logging.info("response of GET_LOG_SIG:%s", response.content)
+        #logging.info("response of GET_LOG_SIG:%s", response.content)
 
         # REGXP_LOGIN_SIG
         rexp = 'var g_login_sig=encodeURIComponent\("(.*?)"\)'
@@ -72,9 +73,6 @@ class LoginModule:
         self.verify_code = m.group(2)
         self.context.account.uin_hex = m.group(3).replace("\\x", "")
         self.need_verify = m.group(1) == '1'
-
-        return True
-
 
     def __web_login(self):
         # URL_UI_LOGIN
@@ -153,7 +151,6 @@ class LoginModule:
         response = self.context.http_service.get(url, parameters)
         if not response:
             raise WebQQException("__get_captcha_image failed")
-        logging.info("response of GET_CAPTHCHA:%s", response.content)
 
         with open("verify_2.png", 'wb') as outfile:
             outfile.write(response.content)
@@ -168,7 +165,7 @@ class LoginModule:
             raise WebQQException("__check_login_sig failed")
         logging.info("response of CHECK_LOGIN_SIG:%s", response.content)
 
-    def __channel_login(self):
+    def channel_login(self):
         # URL_CHANNEL_LOGIN
         url = "http://d.web2.qq.com/channel/login2"
         if not self.context.qq_session.client_id:
@@ -189,7 +186,7 @@ class LoginModule:
         try:
             data = json.loads(response.text, encoding='utf-8')
             if data["retcode"] != 0:
-                info =  "channel login failed! errcode=%s, errmsg=%s" % (data["retcode"], data["errmsg"])
+                info = "channel login failed! errcode=%s, errmsg=%s" % (data["retcode"], data["errmsg"])
                 logging.error(info)
                 raise WebQQException(info)
 

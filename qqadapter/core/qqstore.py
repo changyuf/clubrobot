@@ -25,6 +25,18 @@ class QQStore:
         self.discuz_map = {}  # did = > QQDiscuz
         self.picture_item_list = {}  # filename -> PicItem 上传图片列表
 
+    def add_stranger(self, stranger):
+        self.stranger_map[stranger.uin] = stranger
+
+    def get_stranger_by_uin(self, uin):
+        return self.stranger_map.get(uin)
+
+    def get_buddy_by_uin(self, uin):
+        return self.buddy_map.get(uin)
+
+    def add_buddy(self, buddy):
+        self.buddy_map[buddy.uin] = buddy
+
     def get_group_by_gin(self, gin):
         groups = self.group_map.values()
         for g in groups:

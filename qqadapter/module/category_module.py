@@ -20,10 +20,10 @@ class CategoryModule:
         url = "http://s.web2.qq.com/api/get_user_friends2"
 
         ptwebqq = self.context.http_service.get_cookie_value('ptwebqq')
-        hash_value = QQEncryptor.hash(self.account.uin, ptwebqq)
+        hash_value = QQEncryptor.hash(self.context.account.uin, ptwebqq)
         payload = json.dumps({
             "h": "hello",
-            "vfwebqq": self.qq_session.vfwebqq,
+            "vfwebqq": self.context.qq_session.vfwebqq,
             "hash": hash_value,
         })
         post_data = "r=%s" % urllib.quote(payload)

@@ -4,9 +4,10 @@ __author__ = 'changyuf'
 import json
 import random
 import urllib
+import logging
 from qqadapter.bean.qq_message import QQMessage
 from qqadapter.core.qqconstants import QQConstants
-from qqadapter.utilities.utilities import HttpCookies
+from qqadapter.utilities.utilities import WebQQException
 
 # MSG_FONT = {
 #     'name': '微软雅黑',
@@ -18,12 +19,8 @@ MSG_FONT = '[\"font\",{\"name\":\"宋体\",\"size\":10,\"style\":[0,0,0],\"color
 
 
 class ChatModule:
-    def __init__(self, qq_session, request_session, account, store, group_module):
-        self.qq_session = qq_session
-        self.request_session = request_session
-        self.account = account
-        self.store = store
-        self.group_module = group_module
+    def __init__(self, context):
+        self.context = context
 
     def send_message(self, message):
         if message.type == QQMessage.Type.SESSION_MSG:
@@ -68,33 +65,19 @@ class ChatModule:
         return self.__do_send_message(message)
 
     def __do_send_message(self, message):
-        url = "http://d.web2.qq.com/channel/poll2"
-
         # ptwebqq = HttpCookies.get_value('ptwebqq')
         # hash_value = QQEncryptor.hash(self.account.uin, ptwebqq)
         text = message.message
         if isinstance(text, unicode):
             text = text.encode('utf8')
-        #text.replace('\n', '\\n')
-        #content = [text.replace('"', '\\"'), ["font", MSG_FONT]]
-        #text = '\"' + text + '\"'
-        #content = "[%s, MSG_FONT]" % text
-        #content = '[\"$s\",[\"font\",{\"name\":\"宋体\",\"size\":10,\"style\":[0,0,0],\"color\":\"000000\"}]]' % text
-        #content = '[\\"%s\\",[\\"font\\",{\\"name\\":\\"宋体\\",\\"size\\":10,\\"style\\":[0,0,0],\\"color\\":\\"000000\\"}]]' % "无语"
-        #print "content:", content
-        #text = "中国好\\n市民"
+        text.replace('"', '\\"')
 
         #{"to":2754143906,"content":"[\"hi\",[\"font\",{\"name\":\"宋体\",\"size\":10,\"style\":[0,0,0],\"color\":\"000000\"}]]","face":558,"clientid":53999199,"msg_id":68900001,"psessionid":"8368046764001d636f6e6e7365727665725f77656271714031302e3133392e372e31363400002a8d00000143036e0400f00ea2b56d0000000a40315872377232714c646d00000028ac8fad9c82e24709d6a606cb2388fda292f49d8e7f73a36457414274a4d55f36dd204f1f704845be"}
         payload = {
-            #"content": content,
-            #"content": '[\"无语\",[\"font\",{\"name\":\"宋体\",\"size\":10,\"style\":[0,0,0],\"color\":\"000000\"}]]',
             "content": '[\"%s\",[\"font\",{\"name\":\"宋体\",\"size\":10,\"style\":[0,0,0],\"color\":\"000000\"}]]' % text,
-            #"content":['\"hi\"',['\"font'\"',{'\"name\"':'\"宋体\"'','\"size\"'':10,'\"style\"'':[0,0,0],'\"color\"'':'\"000000\"'}]]
-            #"content": ['\"hi\"'],
-            #"content":[\\"hi\",[\\"font\\",{\\"name\\":\\u"宋体\",\\"size\\":10,\\"style\\":[0,0,0],\"color\":\"000000\"}]]
             "msg_id": random.randint(10000000, 99999999),
-            "clientid": self.qq_session.client_id,
-            "psessionid": self.qq_session.session_id
+            "clientid": self.context.qq_session.client_id,
+            "psessionid": self.context.qq_session.session_id
         }
 
         if message.type == QQMessage.Type.BUDDY_MSG:
@@ -107,16 +90,14 @@ class ChatModule:
             url = "http://d.web2.qq.com/channel/send_qun_msg2"
             payload["group_uin"] = message.group.gin
             payload["face"] = 558
-        # json.put("key", session.getCfaceKey());
-        # json.put("sig", session.getCfaceSig());
         elif message.type == QQMessage.Type.DISCUZ_MSG:
-            pass
+            return True
         # req = createHttpRequest("POST", QQConstants.URL_SEND_DISCUZ_MSG);
         # json.put("did", msg.getDiscuz().getDid());
         # json.put("key", session.getCfaceKey());
         # json.put("sig", session.getCfaceSig());
         elif message.type == QQMessage.Type.SESSION_MSG:  # 临时会话消息
-            pass
+            return True
             # req = createHttpRequest("POST", QQConstants.URL_SEND_SESSION_MSG);
             # QQStranger member =  (QQStranger) msg.getTo();
             # json.put("to", member.getUin());
@@ -125,15 +106,14 @@ class ChatModule:
             # json.put("service_type", member.getServiceType() + "");
         else:
             print "unknown MsgType: ", message.type
+            return True
 
         json_data = json.dumps(payload)
         post_data = "r=%s&clientid=%s&psessionid=%s" % (
-            urllib.quote(json_data), self.qq_session.client_id, self.qq_session.session_id)
+            urllib.quote(json_data), self.context.qq_session.client_id, self.context.qq_session.session_id)
 
-        print "post_data:", post_data
-        # post_data = data = {"r": json.dumps(payload)}
-        response = self.request_session.post(url, data=post_data, headers=QQConstants.POST_HEADERS)
-        #print "cookies:"
-        #HttpCookies.dump(self.request_session.cookies)
-        #print "\n"
-        print "Response for __do_send_message:", response.content
+        logging.info("发送消息.post_data: %s", post_data)
+        response = self.context.http_service.post(url, post_data)
+        if not response:
+            raise WebQQException("poll message failed")
+        logging.info("response of SEND_MESSAGE:%s", response.content)

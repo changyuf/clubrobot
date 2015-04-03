@@ -5,18 +5,19 @@ import time
 import logging
 from qqadapter.utilities.utilities import WebQQException
 
+
 class UserModule(object):
     def __init__(self, context):
         self.context = context
 
     def get_friend_info(self, user):
-        #URL_GET_FRIEND_INFO
+        # URL_GET_FRIEND_INFO
         url = "http://s.web2.qq.com/api/get_friend_info2"
         parameters = {
             'tuin': str(user.uin),
-            'verifysession':"",
+            'verifysession': "",
             'code': '',
-            'vfwebqq':self.context.qq_session.vfwebqq,
+            'vfwebqq': self.context.qq_session.vfwebqq,
             't': str(int(time.time()))
         }
 
@@ -25,7 +26,7 @@ class UserModule(object):
             raise WebQQException("get_friend_info failed")
         logging.info("response of GET_FRIEND_INFO:%s", response.content)
 
-        data =  response.json()
+        data = response.json()
         UserModule.__parse_user_info(data, user)
 
     def get_stranger_info(self, user):
@@ -33,10 +34,10 @@ class UserModule(object):
         url = "http://s.web2.qq.com/api/get_stranger_info2"
         parameters = {
             'tuin': str(user.uin),
-            'verifysession':"",
-            'gid':0,
+            'verifysession': "",
+            'gid': 0,
             'code': '',
-            'vfwebqq':self.context.qq_session.vfwebqq,
+            'vfwebqq': self.context.qq_session.vfwebqq,
             't': str(int(time.time()))
         }
 
@@ -45,7 +46,7 @@ class UserModule(object):
             raise WebQQException("get_friend_info failed")
         logging.info("response of GET_STRANGER_INFO:%s", response.content)
 
-        data =  response.json()
+        data = response.json()
         UserModule.__parse_user_info(data, user)
 
     @staticmethod
@@ -60,7 +61,7 @@ class UserModule(object):
         # user.setAllow(QQAllow.values()[obj.getInt("allow")]);
         # user.setCollege(obj.getString("college"));
         # if (obj.has("reg_time")) {
-        #     user.setRegTime(obj.getInt("reg_time"));
+        # user.setRegTime(obj.getInt("reg_time"));
         # }
         user.uin = str(result["uin"])
         # user.setConstel(obj.getInt("constel"));

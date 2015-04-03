@@ -4,16 +4,23 @@ __author__ = 'changyuf'
 import json
 import urllib
 import logging
+import datetime
 from qqadapter.utilities.qq_encryptor import QQEncryptor
 from qqadapter.utilities.utilities import WebQQException
+from qqadapter.bean.qq_message import QQMessage
+from qqadapter.bean.qq_group_member import QQGroupMember
+from qqadapter.bean.qq_group import QQGroup
+from qqadapter.bean.qq_stranger import QQStranger
+
 
 class PollMessageModule:
-    def __init__(self, context):
+    def __init__(self, context, user_module):
         self.context = context
+        self.user_module = user_module
 
     def poll_message(self):
         response = self.__get_response()
-        self.__parse_response(response)
+        return self.__parse_response(response)
 
     def __get_response(self):
         # URL_POLL_MSG
@@ -32,16 +39,20 @@ class PollMessageModule:
 
         response = self.context.http_service.post(url, post_data)
         if not response:
-            raise WebQQException("get_group_list failed")
+            raise WebQQException("poll message failed")
         logging.info("response of POLL_MESSAGE:%s", response.content)
 
         return response
 
     def __parse_response(self, response):
         data = response.json()
+        if data["retcode"] == 116:
+            # 需要更新ptwebqq值，暂时不知道干嘛用的
+            # {"retcode":116,"p":"2c0d8375e6c09f2af3ce60c6e081bdf4db271a14d0d85060"}
+            return data["retcode"], data["p"]
         if data["retcode"] != 0:
             print "get group list failed.", data["retcode"], data["errmsg"]
-            return False
+            return data["retcode"], None
 
         results = data["result"]
         for message in results:
@@ -61,84 +72,56 @@ class PollMessageModule:
                 self.__process_group_message(msg)
             elif poll_type == "discu_message":
                 # 讨论组消息
-                pass
-                # notifyEvents.add(processDiscuzMsg(poll_data));
+                logging.info("收到讨论组消息")
             elif poll_type == "sess_message":
                 # 临时会话消息
-                pass
-                # notifyEvents.add(processSessionMsg(poll_data));
+                logging.info("收到临时会话消息")
             elif poll_type == "shake_message":
                 # 窗口震动
-                pass
-                # long fromUin = poll_data["from_uin");
-                # QQUser user = getContext().getStore().getBuddyByUin(fromUin);
-                # notifyEvents.add(new QQNotifyEvent(QQNotifyEvent.Type.SHAKE_WINDOW, user));
+                logging.info("收到窗口震动消息")
             elif poll_type == "kick_message":
                 # 被踢下线
-                pass
-                # getContext().getAccount().setStatus(QQStatus.OFFLINE);
-                # getContext().getSession().setState(QQSession.State.KICKED);
-                # notifyEvents.add(new QQNotifyEvent(
-                # QQNotifyEvent.Type.KICK_OFFLINE, poll_data
-                # .getString("reason")));
+                logging.error("被踢下线")
+                return 250, None
             elif poll_type == "buddies_status_change":
                 pass
-                # notifyEvents.add(processBuddyStatusChange(poll_data));
             elif poll_type == "system_message":
                 # 好友添加
-                pass
-                # QQNotifyEvent processSystemMessage = processSystemMsg(poll_data);
-                # if(processSystemMessage != null){
-                # notifyEvents.add(processSystemMessage);
-                # }
+                logging.info("好友添加消息")
             elif poll_type == "group_web_message":
                 # 发布了共享文件
                 pass
-
-                # QQNotifyEvent processSystemMessage = processGroupWebMsg(poll_data);
-                # if(processSystemMessage != null){
-                # notifyEvents.add(processSystemMessage);
-                # }
             elif poll_type == "sys_g_msg":
                 # 被踢出了群
-                pass
-                # QQNotifyEvent processSystemMessage = processSystemGroupMsg(poll_data);
-                # if(processSystemMessage != null){
-                # notifyEvents.add(processSystemMessage);
-                # }
+                logging.info("好友添加消息")
             else:
                 # 未知消息类型
-                pass
+                logging.info("未知消息类型")
 
             if msg:
                 msg.dump()
 
+            return data["retcode"], msg
+
     def __parse_buddy_message(self, poll_data):
         from_uin = str(poll_data["from_uin"])
-        if not self.store.buddy_map.get(from_uin):  # 消息来自陌生人
-            # QQUser member = store.getStrangerByUin(fromUin); # 搜索陌生人列表
-            # if (member == null) {
-            # member = new QQHalfStranger();
-            # member.setUin(fromUin);
-            # store.addStranger((QQStranger) member);
-            #
-            # # 获取用户信息
-            # UserModule userModule = getContext().getModule(QQModule.Type.USER);
-            #     userModule.getUserInfo(member, null);
-            # }
-            # msg.setFrom(member);
-            return None
-
         msg = QQMessage()
         msg.id = poll_data["msg_id"]
         msg.id2 = poll_data["msg_id2"]
-        # msg.content_list = poll_data["content"]
-        # msg.parseContentList(poll_data.getJSONArray("content").toString());
         msg.parse_content_list(poll_data["content"])
         msg.type = QQMessage.Type.BUDDY_MSG
-        msg.to_user = self.account
-        msg.from_user = self.store.buddy_map[from_uin]
+        msg.to_user = self.context.account
+        msg.from_user = self.context.store.get_buddy_by_uin(from_uin)
         msg.time = datetime.datetime.fromtimestamp(poll_data["time"])
+
+        if not msg.from_user:  # 消息来自陌生人
+            member = self.context.store.get_stranger_by_uin(from_uin) # 搜索陌生人列表
+            if not member:
+                member = QQStranger()
+                member.uin(from_uin);
+                self.context.store.add_stranger(member)
+                self.user_module.get_friend_info(member)
+                msg.from_user = member
 
         return msg
 
@@ -149,22 +132,21 @@ class PollMessageModule:
         from_uin = str(poll_data["send_uin"])
         group_code = poll_data["group_code"]
         group_id = poll_data["info_seq"];  # 真实群号码
-        group = self.store.group_map.get(group_code)
+        group = self.contextstore.group_map.get(group_code)
         if not group:
             group = QQGroup()
             group.code = group_code
             group.gid = group_id
             # put to store
-            self.store.add_group(group)
+            self.context.store.add_group(group)
             self.group_module.get_group_info(group)
         if group.gid <= 0:
             group.gid = group_id
 
-        #msg.content_list = poll_data["content"]
         msg.parse_content_list(poll_data["content"])
         msg.type = QQMessage.Type.GROUP_MSG
         msg.group = group
-        msg.to_user = self.account
+        msg.to_user = self.context.account
         msg.time = datetime.datetime.fromtimestamp(poll_data["time"])
         msg.from_user = group.get_member_by_uin(from_uin)
         if not msg.from_user:
@@ -173,6 +155,6 @@ class PollMessageModule:
             msg.from_user = member
             group.members.append(member)
 
-            UserModule.get_stranger_info(self.qq_session, member, self.request_session)
+            self.user_module.get_stranger_info( member)
 
         return msg
