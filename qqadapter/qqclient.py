@@ -54,6 +54,13 @@ class QQClient:
     def get_group_list(self):
         self.group_module.get_group_list()
 
+    def get_user_account(self, user):
+        self.user_module.get_user_account(user)
+
+    def get_group_member_qq(self, group):
+        for member in group.members:
+            self.user_module.get_user_account(member)
+
     def poll_message(self):
         if self.context.qq_session.state == QQSession.State.OFFLINE:
             logging.error("client is already offline, can not poll message")

@@ -4,3 +4,5 @@
 run.sh
 *.png
 *.bak
+log
+*.log

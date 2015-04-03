@@ -3,7 +3,7 @@ __author__ = 'changyuf'
 
 import time
 import logging
-from qqadapter.utilities.utilities import WebQQException
+from qqadapter.utilities.utilities import WebQQException, to_str, transfer_gender
 
 
 class UserModule(object):
@@ -43,11 +43,32 @@ class UserModule(object):
 
         response = self.context.http_service.get(url, parameters)
         if not response:
-            raise WebQQException("get_friend_info failed")
+            raise WebQQException("get_stranger_info failed")
         logging.info("response of GET_STRANGER_INFO:%s", response.content)
 
         data = response.json()
         UserModule.__parse_user_info(data, user)
+
+    def get_user_account(self, user):
+        # URL_GET_USER_ACCOUNT
+        url = "http://s.web2.qq.com/api/get_friend_uin2"
+        parameters = {
+            'tuin': str(user.uin),
+            'verifysession': "",
+            'gid': 0,
+            'code': '',
+            'vfwebqq': self.context.qq_session.vfwebqq,
+            't': str(int(time.time()))
+        }
+
+        response = self.context.http_service.get(url, parameters)
+        if not response:
+            raise WebQQException("get_user_account failed")
+        logging.info("response of GET_USER_ACCOUNT:%s", response.content)
+        data = response.json()
+        if data["retcode"] == 0:
+            result = data["result"]
+            user.qq = to_str(str(result["account"]))
 
     @staticmethod
     def __parse_user_info(data, user):
@@ -78,7 +99,7 @@ class UserModule(object):
         # user.setChineseZodiac(obj.getInt("shengxiao"));
         # user.setEmail("email");
         # user.setProvince(obj.getString("province"));
-        # user.setGender(obj.getString("gender"));
+        user.gender = transfer_gender(result["gender"])
         # user.setMobile(obj.getString("mobile"));
         # if (obj.has("client_type")) {
         #     user.setClientType(QQClientType.valueOfRaw(obj.getInt("client_type")));

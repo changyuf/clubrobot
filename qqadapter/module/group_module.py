@@ -6,7 +6,7 @@ import time
 import json
 import urllib
 from qqadapter.utilities.qq_encryptor import QQEncryptor
-from qqadapter.utilities.utilities import WebQQException,to_str
+from qqadapter.utilities.utilities import WebQQException, to_str, transfer_gender
 from qqadapter.bean.qq_group import QQGroup
 from qqadapter.bean.qq_group_member import QQGroupMember
 from qqadapter.module.db_module import DBModule
@@ -71,7 +71,7 @@ class GroupModule:
         response = self.context.http_service.get(url, parameters)
         if not response:
             raise WebQQException("get_group_list failed")
-        logging.info("response of GET_GROUP_LIST:%s", response.content)
+        logging.info("response of GET_GROUP_INFO:%s", response.content)
         data = json.loads(response.text, encoding='utf-8')
 
         if not data:
@@ -111,21 +111,18 @@ class GroupModule:
         for minfo in minfos:
             uin = str(minfo.get("uin"))
             member = group.get_member_by_uin(uin)
-            member.qq = uin
             member.nick_name = to_str(minfo.get("nick"))
             member.province = to_str(minfo.get("province"))
             member.country = to_str(minfo.get("country"))
             member.city = to_str(minfo.get("city"))
-            gender = to_str(minfo.get("gender"))
-            if gender == "female":
-                member.gender = "女"
-            elif gender == "male":
-                member.gender = "男"
-            else:
-                member.gender = "人妖"
-            print "member.gender", member.gender
+            member.gender = transfer_gender(minfo.get("gender"))
 
-            #db.insert_user(member)
+        cards = results.get("cards")
+        if cards:
+            for card in cards:
+                muin = str(card.get("muin"))
+                member = group.get_member_by_uin(muin)
+                member.card = card.get("card")
 
         return True
 

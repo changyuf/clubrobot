@@ -1,7 +1,6 @@
 # -*- coding:utf8 -*-
 __author__ = 'changyuf'
 
-# deprecated file
 import cookielib
 
 
@@ -11,21 +10,27 @@ def to_str(s):
     return s
 
 
+def transfer_gender(gender):
+    gender = to_str(gender)
+    if gender == "female":
+        return "女"
+    if gender == "male":
+        return "男"
+    return "人妖"
+
+
 class WebQQException(Exception):
     pass
 
 
 class HttpCookies:
-    # file_name = "./http_cookies.txt"
     cookie_jar = cookielib.LWPCookieJar(filename="./http_cookies2.txt")
-    # cookie_jar = None
 
     def __init__(self):
         pass
 
     @staticmethod
     def save_cookies(cookie_jar):
-        #HttpCookies.dump(cookie_jar)
         for c in cookie_jar:
             args = dict(vars(c).items())
             args['rest'] = args['_rest']

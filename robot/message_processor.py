@@ -18,7 +18,7 @@ class MessageProcessor:
     def __process_group_message(self, msg):
         group_name = msg.group.name
         if group_name == "运动测试" or group_name == "后沙峪友瑞羽毛球群":
-            if msg.message.startswith("@小秘书"):
+            if msg.message.startswith("#小秘书"):
                 self.__deal_with_call_me(msg)
             elif msg.message.startswith("#摸摸"):
                 self.__deal_with_query(msg)

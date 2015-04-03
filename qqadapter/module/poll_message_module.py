@@ -26,7 +26,7 @@ class PollMessageModule:
         # URL_POLL_MSG
         url = "http://d.web2.qq.com/channel/poll2"
 
-        ptwebqq = self.context.httpService.get_cookie_value('ptwebqq')
+        ptwebqq = self.context.http_service.get_cookie_value('ptwebqq')
         hash_value = QQEncryptor.hash(self.context.account.uin, ptwebqq)
         payload = json.dumps({
             "clientid": self.context.qq_session.client_id,
@@ -51,7 +51,6 @@ class PollMessageModule:
             # {"retcode":116,"p":"2c0d8375e6c09f2af3ce60c6e081bdf4db271a14d0d85060"}
             return data["retcode"], data["p"]
         if data["retcode"] != 0:
-            print "get group list failed.", data["retcode"], data["errmsg"]
             return data["retcode"], None
 
         results = data["result"]
@@ -69,7 +68,6 @@ class PollMessageModule:
             elif poll_type == "group_message":
                 # 群消息
                 msg = self.__parse_group_message(poll_data)
-                self.__process_group_message(msg)
             elif poll_type == "discu_message":
                 # 讨论组消息
                 logging.info("收到讨论组消息")
@@ -132,7 +130,7 @@ class PollMessageModule:
         from_uin = str(poll_data["send_uin"])
         group_code = poll_data["group_code"]
         group_id = poll_data["info_seq"];  # 真实群号码
-        group = self.contextstore.group_map.get(group_code)
+        group = self.context.store.group_map.get(group_code)
         if not group:
             group = QQGroup()
             group.code = group_code
