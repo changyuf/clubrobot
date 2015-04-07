@@ -1,4 +1,4 @@
-export PYTHONPATH=$PYTHONPATH:.:./src
+export PYTHONPATH=$PYTHONPATH:.:../src
 
 python ./robot/clubrobot.py
 #python ./qqadapter/qqclient.py
