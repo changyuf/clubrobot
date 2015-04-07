@@ -2,6 +2,7 @@
 __author__ = 'changyuf'
 
 import MySQLdb
+import logging
 from qqadapter.bean.qquser import QQUser
 from qqadapter.utilities.utilities import to_str
 
@@ -16,21 +17,12 @@ class DBModule:
 
     def insert_user(self, qq_user):
         cursor = self.db.cursor()
-        # SQL 插入语句
-        # sql = """INSERT INTO qq_account
-        # (uin, qq, nick_name, gender, balance,
-        # level, activity_times, accumulate_points, comment, other_comment)
-        #     VALUES
-        #         (123456789, '3173831764', '牛逼人物', 'M', 2000,
-        #         1, 0, 10, "很牛逼", "很中肯");"""
         sql = """INSERT INTO qq_account
                 (uin, qq, nick_name, gender, balance,
-                club_level, activity_times, accumulate_points, comments, other_comments)
+                club_level, activity_times, accumulate_points, card, comments, other_comments)
             VALUES
                 ("{user.uin}", "{user.qq}", "{user.nick_name}", "{user.gender}", {user.balance},
-                {user.club_level}, {user.activity_times}, {user.accumulate_points}, "{user.comments}",
-                "{user.other_comments}");""".format(user=qq_user)
-        print sql
+                {user.club_level}, {user.activity_times}, {user.accumulate_points}, "{user.card}", "{user.comments}", "{user.other_comments}");""".format(user=qq_user)
         try:
             # 执行sql语句
             cursor.execute(sql)
@@ -38,18 +30,32 @@ class DBModule:
             self.db.commit()
         except:
             # Rollback in case there is any error
-            print "Insert failed"
+            logging.error("Insert user into database failed. SQL:%s", sql)
+            self.db.rollback()
+
+    def update_db_info(self, qq_user):
+        logging.info("UIN Change: qq:%s, uin:%s", qq_user.qq, qq_user.uin)
+        cursor = self.db.cursor()
+        sql = "update qq_account set uin='%s', nick_name=%s, card='%s' where qq='%s'" % (qq_user.uin, qq_user.nick_name, qq_user.card, qq_user.qq)
+
+        try:
+            # 执行sql语句
+            cursor.execute(sql)
+            # 提交到数据库执行
+            self.db.commit()
+        except:
+            # Rollback in case there is any error
+            logging.error("update uin failed. SQL:%s", sql)
             self.db.rollback()
 
     def get_user(self, user):
         cursor = self.db.cursor()
-        sql = """SELECT uin, qq, nick_name, gender, balance, club_level, activity_times, accumulate_points, comments, other_comments
-            FROM qq_account WHERE uin = '%s'""" % user.uin
+        sql = """SELECT uin, qq, nick_name, gender, balance, club_level, activity_times, accumulate_points, card, comments, other_comments
+            FROM qq_account WHERE qq = '%s'""" % user.qq
         users = []
         try:
             # 执行SQL语句
             cursor.execute(sql)
-            print "after execute sql"
             # 获取所有记录列表
             results = cursor.fetchall()
             for row in results:
@@ -63,13 +69,16 @@ class DBModule:
                 user.club_level = row[5]
                 user.activity_times = row[6]
                 user.accumulate_points = row[7]
-                user.comments = to_str(row[8])
-                user.other_comments = to_str(row[9])
+                user.card = to_str(row[8])
+                user.comments = to_str(row[9])
+                user.other_comments = to_str(row[10])
                 users.append(user)
         except:
-            print "Error: unable to fetch data"
+            logging.error("get user from database failed. SQL:%s", sql)
 
-        return users
+        if len(users) == 0:
+            return None
+        return users[0]
 
 
 if __name__ == '__main__':

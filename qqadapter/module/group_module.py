@@ -122,7 +122,7 @@ class GroupModule:
             for card in cards:
                 muin = str(card.get("muin"))
                 member = group.get_member_by_uin(muin)
-                member.card = card.get("card")
+                member.card = to_str(card.get("card"))
 
         return True
 

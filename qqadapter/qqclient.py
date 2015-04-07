@@ -57,7 +57,7 @@ class QQClient:
     def get_user_account(self, user):
         self.user_module.get_user_account(user)
 
-    def get_group_member_qq(self, group):
+    def get_group_member_account(self, group):
         for member in group.members:
             self.user_module.get_user_account(member)
 

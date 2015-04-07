@@ -3,7 +3,7 @@ __author__ = 'changyuf'
 
 from qqadapter.bean.qq_message import QQMessage
 
-QUERY_REPLY_PATTEN = """会员名：{user.nick_name}   性别：{user.gender}\\n会员级别：{user.club_level}\\n账户余额：{user.balance}\\n参加活动次数：{user.activity_times}\\n积分：{user.accumulate_points}\\n自我评价：{user.comments}\\n别人评价：{user.other_comments}"""
+QUERY_REPLY_PATTEN = """会员名：{user.card}   性别：{user.gender}\\n会员级别：{user.club_level}\\n账户余额：{user.balance}\\n参加活动次数：{user.activity_times}\\n积分：{user.accumulate_points}\\n自我评价：{user.comments}\\n别人评价：{user.other_comments}"""
 
 
 class MessageProcessor:
@@ -28,14 +28,22 @@ class MessageProcessor:
         # new_msg.message = "叫我干什么，我现在还没长大，什么都干不了"
         # new_msg.group = msg.group
         # new_msg.type = QQMessage.Type.GROUP_MSG
-        msg.message = "叫我干什么，我现在还没长大，\\n什么都干不了"
+        msg.message = "叫我干什么，我现在还没长大，什么都干不了"
         self.chat_module.send_message(msg)
 
     def __deal_with_query(self, msg):
         print "in __deal_with_query"
         user = msg.from_user
         qq_user = self.db.get_user(user)
-        msg.message = QUERY_REPLY_PATTEN.format(user=qq_user[0])
+        if not qq_user:
+            qq_user = user
+            self.db.insert_user(qq_user)
+        if not qq_user.card:
+            qq_user.card = qq_user.nick_name
+        msg.message = QUERY_REPLY_PATTEN.format(user=qq_user)
+
+        print msg.message
+
         self.chat_module.send_message(msg)
 
     def __reply_group_message(self, msg):
