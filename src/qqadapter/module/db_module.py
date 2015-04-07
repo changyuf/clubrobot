@@ -28,9 +28,11 @@ class DBModule:
             cursor.execute(sql)
             # 提交到数据库执行
             self.db.commit()
-        except:
+        except MySQLdb.Error, e:
             # Rollback in case there is any error
             logging.error("Insert user into database failed. SQL:%s", sql)
+            logging.error("Error %d: %s", e.args[0], e.args[1])
+            logging.exception()
             self.db.rollback()
 
     def update_db_info(self, qq_user):
@@ -43,9 +45,11 @@ class DBModule:
             cursor.execute(sql)
             # 提交到数据库执行
             self.db.commit()
-        except:
+        except MySQLdb.Error, e:
             # Rollback in case there is any error
-            logging.error("update uin failed. SQL:%s", sql)
+            logging.error("update uin failed. SQL:%s, error", sql)
+            logging.error("Error %d: %s", e.args[0], e.args[1])
+            logging.exception()
             self.db.rollback()
 
     def get_user(self, user):
@@ -73,8 +77,10 @@ class DBModule:
                 user.comments = to_str(row[9])
                 user.other_comments = to_str(row[10])
                 users.append(user)
-        except:
+        except MySQLdb.Error, e:
             logging.error("get user from database failed. SQL:%s", sql)
+            logging.error("Error %d: %s", e.args[0], e.args[1])
+            logging.exception()
 
         if len(users) == 0:
             return None

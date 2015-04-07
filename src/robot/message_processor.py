@@ -3,7 +3,9 @@ __author__ = 'changyuf'
 
 from qqadapter.bean.qq_message import QQMessage
 
-QUERY_REPLY_PATTEN = """会员名：{user.card}   性别：{user.gender}\\n会员级别：{user.club_level}\\n账户余额：{user.balance}\\n参加活动次数：{user.activity_times}\\n积分：{user.accumulate_points}\\n自我评价：{user.comments}\\n别人评价：{user.other_comments}"""
+QUERY_ACCOUNT_REPLY_PATTEN = """会员名：{user.card}   性别：{user.gender}\\n会员级别：{user.club_level}\\n账户余额：{user.balance}\\n参加活动次数：{user.activity_times}\\n积分：{user.accumulate_points}\\n自我评价：{user.comments}\\n别人评价：{user.other_comments}"""
+QUERY_ACTIVITY_REPLY_PATTEN = """会员名：{user.card}   性别：{user.gender}\\n会员级别：{user.club_level}\\n账户余额：{user.balance}\\n参加活动次数：{user.activity_times}\\n积分：{user.accumulate_points}\\n自我评价：{user.comments}\\n别人评价：{user.other_comments}"""
+
 
 
 class MessageProcessor:
@@ -40,7 +42,7 @@ class MessageProcessor:
             self.db.insert_user(qq_user)
         if not qq_user.card:
             qq_user.card = qq_user.nick_name
-        msg.message = QUERY_REPLY_PATTEN.format(user=qq_user)
+        msg.message = QUERY_ACCOUNT_REPLY_PATTEN.format(user=qq_user)
 
         print msg.message
 

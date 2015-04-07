@@ -1,0 +1,9 @@
+# -*- coding:utf8 -*-
+__author__ = 'changyuf'
+
+class Singleton(object):
+    def __new__(cls, *args, **kw):
+        if not hasattr(cls, '_instance'):
+            orig = super(Singleton, cls)
+            cls._instance = orig.__new__(cls, *args, **kw)
+        return cls._instance
