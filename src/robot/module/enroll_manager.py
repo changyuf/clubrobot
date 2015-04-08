@@ -8,9 +8,9 @@ from robot.bean.participant import Participant
 from robot.utility.constants import Constants
 from robot.module.participant_manager import ParticipantManager
 from robot.module.activity_manager import ActivityManager
-from qqadapter.module.db_module import DBModule
 from qqadapter.bean.qq_group_member import QQGroupMember
 from qqadapter.bean.qq_message import QQMessage
+from robot.module.qq_account_manager import QQAccountManager
 
 
 class EnrollManager:
@@ -182,9 +182,9 @@ if __name__ == "__main__":
     #participant_manager = ParticipantManager()
     user = QQGroupMember()
     user.qq = "17014162"
-    db_module = DBModule()
+    qq_account_manager = QQAccountManager()
     msg = QQMessage()
-    msg.from_user =db_module.get_user(user)
+    msg.from_user =qq_account_manager.get_user(user)
     msg.message = "#报名周六"
     enroll_manager = EnrollManager(activity_manager)
     # print enroll_manager.enroll(msg)

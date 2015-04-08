@@ -6,11 +6,10 @@ import logging
 
 from robot.utility.config import Config
 from qqadapter.qqclient import QQClient
-from qqadapter.core.qqconstants import QQConstants
 from qqadapter.utilities.utilities import WebQQException
-from robot.message_processor import MessageProcessor
-from qqadapter.module.db_module import DBModule
-from robot.data_sync import DataSync
+from robot.module.message_processor import MessageProcessor
+from robot.utility.data_sync import DataSync
+from robot.module.qq_account_manager import QQAccountManager
 
 
 def begin_poll_message(qq_client, processor):
@@ -34,9 +33,9 @@ if __name__ == '__main__':
     client = QQClient('2899530487', '123456789')
     #client = QQClient('3106426008', 'leepet123')
     #client = QQClient('3047296752', '123456789')
-    db_module = DBModule()
-    msg_processor = MessageProcessor(client.chat_module, db_module)
-    data_sync = DataSync(db_module)
+    qq_account_manager = QQAccountManager()
+    msg_processor = MessageProcessor(client.chat_module, qq_account_manager)
+    data_sync = DataSync(qq_account_manager)
     try:
         client.login()
         client.get_friend_info(client.context.account)
@@ -45,7 +44,6 @@ if __name__ == '__main__':
 
         for group in client.context.store.group_map.values():
             if group.name == "运动测试" or group.name == "后沙峪友瑞羽毛球群":
-                print "开始获取群详细信息.群名：%s" % group.name
                 #logging("开始获取群详细信息")
                 client.get_group_info(group)
                 client.get_group_member_account(group)

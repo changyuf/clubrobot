@@ -9,7 +9,6 @@ from qqadapter.utilities.qq_encryptor import QQEncryptor
 from qqadapter.utilities.utilities import WebQQException, to_str, transfer_gender
 from qqadapter.bean.qq_group import QQGroup
 from qqadapter.bean.qq_group_member import QQGroupMember
-from qqadapter.module.db_module import DBModule
 
 
 # 群模块，处理群相关操作
@@ -89,11 +88,9 @@ class GroupModule:
 
     @staticmethod
     def parse_group_info(results, group):
-        #db = DBModule("104.131.158.219", "changyuf", "changyuf", "club_robot")
         ginfo = results["ginfo"]
         group.memo = ginfo.get("memo")
         group.level = ginfo.get("level")
-        # group.setCreateTime(new Date(ginfo.getInt("createtime")));
 
         members = ginfo.get("members")
         for memjson in members:
@@ -104,7 +101,6 @@ class GroupModule:
                 group.members.append(member)
             member.uin = uin
             member.group = group
-            # memjson.getLong("mflag");
 
         # result/minfo
         minfos = results["minfo"]

@@ -9,12 +9,10 @@ else:
     import spidermonkey
 
 from qqadapter.bean.qquser import QQAccount
+from robot.utility.config import Config
 
 
 class QQEncryptor:
-    mq_comm_js = "/home/changyuf/workspace/clubrobot/resources/mq_comm_linux.js"
-    hash_js = "/home/changyuf/workspace/clubrobot/resources/hash_linux.js"
-
     def __init__(self):
         pass
 
@@ -29,7 +27,9 @@ class QQEncryptor:
     def __encrypt_linux(qq_account, verify_code):
         rt = spidermonkey.Runtime()
         cx = rt.new_context()
-        fs = open(QQEncryptor.mq_comm_js, "r")
+        config = Config()
+        mq_comm_js = config.get("qq_adapter", "mq_comm_js_linux")
+        fs = open(mq_comm_js, "r")
         func = cx.execute(fs.read())
         return func(qq_account.password, qq_account.uin_hex, verify_code)
 
@@ -38,7 +38,9 @@ class QQEncryptor:
         js = win32com.client.Dispatch('MSScriptControl.ScriptControl')
         js.Language = 'JavaScript'
         js.AllowUI  = False
-        fs = open("qq_comm_windows.js", "r")
+        config = Config()
+        mq_comm_js = config.get("qq_adapter", "mq_comm_js_windows")
+        fs = open(mq_comm_js, "r")
         js.AddCode(fs.read())
         return js.Run("getPassword", qq_account.password, qq_account.uin_hex, verify_code)
 
@@ -54,7 +56,9 @@ class QQEncryptor:
         js = win32com.client.Dispatch('MSScriptControl.ScriptControl')
         js.Language = 'JavaScript'
         js.AllowUI  = False
-        fs = open("hash_windows.js", "r")
+        config = Config()
+        hash_js = config.get("qq_adapter", "hash_js_windows")
+        fs = open(hash_js, "r")
         js.AddCode(fs.read())
         return js.Run("hash", uin, ptwebqq)
 
@@ -62,7 +66,9 @@ class QQEncryptor:
     def __hash_linux(uin, ptwebqq):
         rt = spidermonkey.Runtime()
         cx = rt.new_context()
-        fs = open(QQEncryptor.hash_js, "r")
+        config = Config()
+        hash_js = config.get("qq_adapter", "hash_js_linux")
+        fs = open(hash_js, "r")
         func = cx.execute(fs.read())
         return func(uin, ptwebqq)
 

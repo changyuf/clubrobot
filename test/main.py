@@ -172,7 +172,7 @@ if __name__ == "__main__":
 
     exit()
     s = 'name is {first} {second}'
-    person = {'first': 'aa', 'second': 'bb', 'third': 'ooo'}
+    person = {'first': 'aaa', 'second': 'bb', 'third': 'ooo'}
     template = '''name is %(first)s %(third)s'''
     s = template % person
     # s = s.format(person)

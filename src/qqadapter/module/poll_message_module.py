@@ -97,9 +97,6 @@ class PollMessageModule:
                 # 未知消息类型
                 logging.info("未知消息类型")
 
-            if msg:
-                msg.dump()
-
             return data["retcode"], msg
 
     def __parse_buddy_message(self, poll_data):

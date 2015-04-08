@@ -62,16 +62,6 @@ class CategoryModule:
             qqc.name = category["name"]
             qqc.sort = category["sort"]
             self.context.store.category_map[qqc.index] = qqc
-            print "type of name:", type(category["name"])
-            print "type of qqc.name:", type(qqc.name)
-            print category["name"]
-            print qqc.name == u"同学"
-            aaa = u"分组名:" + qqc.name + u"\n"
-            print "type of aaa:", type(aaa)
-            print aaa
-
-            bbb = "bbb:%s" % qqc
-            print bbb
 
         # 处理好友基本信息列表 flag/uin/categories
         for friend in friends:
@@ -93,9 +83,6 @@ class CategoryModule:
             uin = str(info["uin"])
             buddy = self.context.store.buddy_map[uin]
             buddy.nick_name = info["nick"]
-            print info["nick"]
-
-            print buddy
 
         # uin/markname
         for mark in mark_names:

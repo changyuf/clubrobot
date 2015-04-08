@@ -1,20 +1,9 @@
 # -*- coding:utf8 -*-
-
 __author__ = 'changyuf'
 
 from qqadapter.bean.qq_category import QQCategory
 from qqadapter.bean.qq_buddy import QQBuddy
-from qqadapter.core.qqsession import QQSession
-from qqadapter.action.get_login_sig_action import GetLoginSigAction
-from qqadapter.action.check_verify_action import CheckVerifyAction
-from qqadapter.bean.qquser import QQAccount
-from qqadapter.utilities.utilities import HttpCookies
-from qqadapter.action.web_login_action import WebLoginAction
-from qqadapter.action.get_captcha_image_action import GetCaptchaImageAction
-from qqadapter.action.check_login_sig_action import CheckLoginSigAction
-from qqadapter.action.channel_login_action import ChannelLoginAction
-from qqadapter.module.user_module import UserModule
-from qqadapter.module.group_module import GroupModule
+
 
 class QQStore:
     def __init__(self):
@@ -53,7 +42,8 @@ class QQStore:
             print category.name
             u"分组名:" + category.name + u"\n"
             # des =  "%r" % category
-            #category.display()
+            # category.display()
+
 
 if __name__ == '__main__':
     buddy = QQBuddy()
@@ -72,4 +62,3 @@ if __name__ == '__main__':
     category.buddy_list.append(buddy2)
 
     category.display()
-
