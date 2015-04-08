@@ -32,7 +32,9 @@ if __name__ == "__main__":
     print config.get("db", "db_pass")
     print config.get("db", "data_base")
     print config.get("robot", "log_file")
-    print config.get("robot", "group_name")
+    group_name = config.get("robot", "group_name")
+    print group_name
+    print group_name == "后沙峪友瑞羽毛球群"
 
 
 
