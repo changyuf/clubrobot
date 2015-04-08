@@ -14,9 +14,10 @@ from qqadapter.bean.qq_stranger import QQStranger
 
 
 class PollMessageModule:
-    def __init__(self, context, user_module):
+    def __init__(self, context, user_module, group_module):
         self.context = context
         self.user_module = user_module
+        self.group_module = group_module
 
     def poll_message(self):
         response = self.__get_response()
@@ -150,6 +151,7 @@ class PollMessageModule:
         if not msg.from_user:
             member = QQGroupMember()
             member.uin = from_uin
+            self.user_module.get_user_account(member)
             msg.from_user = member
             group.members.append(member)
 

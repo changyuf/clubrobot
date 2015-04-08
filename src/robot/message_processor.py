@@ -29,6 +29,8 @@ class MessageProcessor:
                 self.__deal_with_query_account(msg)
             elif  msg.message.startswith("#活动"):
                 self.__deal_with_query_activity(msg)
+            elif  msg.message.startswith("#报名"):
+                self.__deal_with_enroll(msg)
 
     def __deal_with_call_me(self, msg):
         # new_msg = QQMessage()
@@ -48,6 +50,12 @@ class MessageProcessor:
         self.__check_user(msg)
         msg.message = self.activity_manager.get_query_activity_message(msg.from_user)
         logging.info("ACTIVITY_QUERY:%s", msg.message)
+        self.chat_module.send_message(msg)
+
+    def __deal_with_enroll(self, msg):
+        self.__check_user(msg)
+        msg.message = self.activity_manager.enroll(msg.from_user)
+        logging.info("ENROLL:%s", msg.message)
         self.chat_module.send_message(msg)
 
     def __check_user(self, msg):

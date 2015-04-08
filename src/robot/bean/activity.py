@@ -1,8 +1,10 @@
 # -*- coding:utf8 -*-
 __author__ = 'changyuf'
 
+
 class Activity:
     def __init__(self):
+        self.id = 0
         self.title = ""
         self.description = ""
         self.activity_position = ""
@@ -16,6 +18,7 @@ class Activity:
         self.organiser_phone = ""
 
     def dump(self):
+        print "ID：", self.id
         print "活动：", self.title
         print "描述：", self.description
         print "活动地点：", self.activity_position

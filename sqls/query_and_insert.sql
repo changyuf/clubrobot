@@ -99,3 +99,5 @@ INSERT INTO qq_account
                 ('3173831764', '3173831764', '×îÅ£', 'M', 2000,
                 1, 0, 10);
                 
+
+ALTER TABLE activities ADD checked_out INT NOT NULL DEFAULT 0;

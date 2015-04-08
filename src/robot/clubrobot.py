@@ -4,6 +4,7 @@ __author__ = 'changyuf'
 import time
 import logging
 
+from robot.utility.config import Config
 from qqadapter.qqclient import QQClient
 from qqadapter.core.qqconstants import QQConstants
 from qqadapter.utilities.utilities import WebQQException
@@ -24,7 +25,9 @@ def begin_poll_message(qq_client, processor):
     return True
 
 if __name__ == '__main__':
-    logging.basicConfig(filename=QQConstants.LOG_FILE, level=logging.INFO)
+    config = Config()
+    log_file = config.get("robot", "log_file")
+    logging.basicConfig(filename=log_file, level=logging.INFO)
     logging.info("\n\n******************** START ********************")
     # client = QQClient('3173831764', '123456789')  #小秘书
 

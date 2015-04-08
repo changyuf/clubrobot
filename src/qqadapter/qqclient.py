@@ -33,7 +33,7 @@ class QQClient:
         self.category_module = CategoryModule(self.context)
         self.login_module = LoginModule(self.context)
         self.user_module = UserModule(self.context)
-        self.poll_message_module = PollMessageModule(self.context, self.user_module)
+        self.poll_message_module = PollMessageModule(self.context, self.user_module, self.group_module)
         self.chat_module = ChatModule(self.context)
 
     def login(self):
