@@ -49,6 +49,24 @@ class TestProperty(object):
 from qqadapter.core.qqconstants import QQConstants
 
 if __name__ == "__main__":
+    msg = "报名  周六+1女+2男"
+    msg = msg.replace(" ", "")
+    msg = msg.replace("报名", "")
+    separator = "+"
+    msg = msg.split(separator)
+    nPos = msg[1].index("女")
+    print nPos
+
+    num = len(msg)
+    print int(msg[1][:1])
+    print int(msg[2][:1])
+    print num
+    for text in msg:
+        print text
+
+    print msg
+    exit()
+
     text = '''中国
     人民'''
     content = '[\\"%s\\",[\\"font\\",{\\"name\\":\\"宋体\\",\\"size\\":10,\\"style\\":[0,0,0],\\"color\\":\\"000000\\"}]]' % text

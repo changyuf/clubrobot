@@ -5,14 +5,16 @@ import MySQLdb
 import logging
 from qqadapter.bean.qquser import QQUser
 from qqadapter.utilities.utilities import to_str
+from robot.utility.config import Config
 
 
 class DBModule:
-    def __init__(self, host, user, password, data_base):
-        self.host = host
-        self.user = user
-        self.password = password
-        self.data_base = data_base
+    def __init__(self):
+        config = Config()
+        host = config.get("db", "db_host")
+        user = config.get("db", "db_user")
+        password = config.get("db", "db_pass")
+        data_base = config.get("db", "data_base")
         self.db = MySQLdb.connect(host, user, password, data_base, charset='utf8', use_unicode=True)
 
     def insert_user(self, qq_user):
@@ -38,7 +40,7 @@ class DBModule:
     def update_db_info(self, qq_user):
         logging.info("UIN Change: qq:%s, uin:%s", qq_user.qq, qq_user.uin)
         cursor = self.db.cursor()
-        sql = "update qq_account set uin='%s', nick_name=%s, card='%s' where qq='%s'" % (qq_user.uin, qq_user.nick_name, qq_user.card, qq_user.qq)
+        sql = "update qq_account set uin='%s', nick_name='%s', card='%s' where qq='%s'" % (qq_user.uin, qq_user.nick_name, qq_user.card, qq_user.qq)
 
         try:
             # 执行sql语句

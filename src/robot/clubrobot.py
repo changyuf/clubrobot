@@ -28,10 +28,10 @@ if __name__ == '__main__':
     logging.info("\n\n******************** START ********************")
     # client = QQClient('3173831764', '123456789')  #小秘书
 
-    # client = QQClient('2899530487', '123456789')
+    client = QQClient('2899530487', '123456789')
     #client = QQClient('3106426008', 'leepet123')
-    client = QQClient('3047296752', '123456789')
-    db_module = DBModule("104.131.158.219", "changyuf", "changyuf", "club_robot")
+    #client = QQClient('3047296752', '123456789')
+    db_module = DBModule()
     msg_processor = MessageProcessor(client.chat_module, db_module)
     data_sync = DataSync(db_module)
     try:

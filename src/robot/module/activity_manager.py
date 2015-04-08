@@ -6,8 +6,11 @@ from robot.utility.db_manager import DBManager
 from robot.bean.activity import Activity
 from robot.utility.utilities import to_str
 
+#QUERY_ACTIVITY_REPLY_PATTEN = """{activity.title} {.gender}\\n会员级别：{user.club_level}\\n账户余额：{user.balance}\\n参加活动次数：{user.activity_times}\\n积分：{user.accumulate_points}\\n自我评价：{user.comments}\\n别人评价：{user.other_comments}"""
+
 
 class ActivityManager:
+    weekday = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
     def __init__(self):
         self.db_manager = DBManager()
 
@@ -39,14 +42,22 @@ class ActivityManager:
 
         return activities
 
+    def get_query_activity_message(self, user):
+        activities = self.get_recent_activities()
+        #4月9日周四晚上7:00 后沙峪友瑞羽毛球俱乐部常规活动  0/12  杨峰  报名中
+        text = "报名中的活动有：\\n"
+        for activity in activities:
+            text += "%s:  %s\\n" % (ActivityManager.weekday[activity.start_time.weekday()], activity.title)
+        return text
+
+
 
 if __name__ == "__main__":
-    weekday = ["周一", "周二", "周三", "周四", "周五", "周六", "周日", ]
     manager = ActivityManager()
     activities = manager.get_recent_activities()
     for index, activity in enumerate(activities):
         print activity.start_time
         #activity_time = datetime.datetime.strptime(str(activity.start_time), '%Y-%m-%d %H:%M:%S')
-        print "********* %s ***********" % weekday[activity.start_time.weekday()]
+        print "********* %s ***********" % ActivityManager.weekday[activity.start_time.weekday()]
         activity.dump()
 
