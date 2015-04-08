@@ -4,6 +4,7 @@ __author__ = 'changyuf'
 import logging
 from qqadapter.bean.qq_message import QQMessage
 from robot.module.activity_manager import ActivityManager
+from robot.module.enroll_manager import EnrollManager
 
 QUERY_ACCOUNT_REPLY_PATTEN = """会员名：{user.card}   性别：{user.gender}\\n会员级别：{user.club_level}\\n账户余额：{user.balance}\\n参加活动次数：{user.activity_times}\\n积分：{user.accumulate_points}\\n自我评价：{user.comments}\\n别人评价：{user.other_comments}"""
 QUERY_ACTIVITY_REPLY_PATTEN = """会员名：{user.card}   性别：{user.gender}\\n会员级别：{user.club_level}\\n账户余额：{user.balance}\\n参加活动次数：{user.activity_times}\\n积分：{user.accumulate_points}\\n自我评价：{user.comments}\\n别人评价：{user.other_comments}"""
@@ -15,6 +16,7 @@ class MessageProcessor:
         self.chat_module = chat_module
         self.db = db
         self.activity_manager = ActivityManager()
+        self.enroll_manager = EnrollManager(self.activity_manager)
 
     def process(self, msg):
         if msg.type == QQMessage.Type.GROUP_MSG:
@@ -27,17 +29,21 @@ class MessageProcessor:
                 self.__deal_with_call_me(msg)
             elif msg.message.startswith("#摸摸"):
                 self.__deal_with_query_account(msg)
-            elif  msg.message.startswith("#活动"):
+            elif msg.message.startswith("#查询活动"):
                 self.__deal_with_query_activity(msg)
-            elif  msg.message.startswith("#报名"):
+            elif msg.message.startswith("#报名"):
                 self.__deal_with_enroll(msg)
+            elif msg.message.startswith("#取消报名"):
+                self.__deal_with_cancel_enroll(msg)
+
 
     def __deal_with_call_me(self, msg):
         # new_msg = QQMessage()
         # new_msg.message = "叫我干什么，我现在还没长大，什么都干不了"
         # new_msg.group = msg.group
         # new_msg.type = QQMessage.Type.GROUP_MSG
-        msg.message = "叫我干什么，我现在还没长大，什么都干不了"
+        content = "@%s,您好，请问您有什么指示\\n我现在可以执行以下指令：\\n【#摸摸】：查询您账户信息\\n【#查询活动】：查询最近7天的活动\\n【#报名】：报名活动\\n【#取消报名】:取消报名" % msg.from_user.card
+        msg.message = content
         self.chat_module.send_message(msg)
 
     def __deal_with_query_account(self, msg):
@@ -54,8 +60,14 @@ class MessageProcessor:
 
     def __deal_with_enroll(self, msg):
         self.__check_user(msg)
-        msg.message = self.activity_manager.enroll(msg.from_user)
+        msg.message = self.enroll_manager.enroll(msg)
         logging.info("ENROLL:%s", msg.message)
+        self.chat_module.send_message(msg)
+
+    def __deal_with_cancel_enroll(self, msg):
+        self.__check_user(msg)
+        msg.message = self.enroll_manager.cancel(msg)
+        logging.info("CANCEL ENROLL:%s", msg.message)
         self.chat_module.send_message(msg)
 
     def __check_user(self, msg):

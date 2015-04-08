@@ -11,6 +11,7 @@ class Participant:
         self.gender = ""
         self.add_on_female = 0
         self.add_on_male = 0
+        self.cost = 0
 
     def dump(self):
         print "活动ID：", self.activity_id

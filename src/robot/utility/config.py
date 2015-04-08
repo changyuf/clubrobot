@@ -31,6 +31,8 @@ if __name__ == "__main__":
     print config.get("db", "db_user")
     print config.get("db", "db_pass")
     print config.get("db", "data_base")
+    print config.get("robot", "log_file")
+    print config.get("robot", "group_name")
 
 
 

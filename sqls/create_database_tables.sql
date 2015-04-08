@@ -43,5 +43,7 @@ CREATE TABLE IF NOT EXISTS participants(
 	type VARCHAR(40) CHARACTER SET utf8 NOT NULL,
 	gender VARCHAR(4) CHARACTER SET utf8 NOT NULL,
 	add_on_female INT NOT NULL DEFAULT 0, 
-	add_on_male INT NOT NULL DEFAULT 0
+	add_on_male INT NOT NULL DEFAULT 0,
+	cost INT NOT NULL,
+    PRIMARY KEY (activity_id, qq)
 	)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
