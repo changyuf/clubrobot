@@ -1,54 +1,58 @@
 select * from club_robot.activities;
 
-INSERT INTO club_robot.activities
+
+SELECT title, start_time, activity_position FROM activities WHERE activity_position = '天裕胜羽毛球馆' ORDER BY start_time DESC LIMIT 2;
+
+
+INSERT INTO activities
   (title, discription, activity_position, start_time, stop_time,
-                price_male, price_femal, max_participants, dead_line, organiser, organiser_phone)
+                cost_male, cost_female, max_participants, dead_line, organiser, organiser_phone)
             VALUES
-                ('4月7日周二晚上7:00后沙峪友瑞羽毛球俱乐部常规活动', 
+                ('4月14日周二晚上7:00后沙峪友瑞羽毛球俱乐部常规活动', 
                 '后沙峪友瑞羽毛球俱乐部常规活动', 
                 '天裕胜羽毛球馆',
-                '2015-04-07 19:00', 
-                '2015-04-07 21:00',
+                '2015-04-14 19:00', 
+                '2015-04-14 21:00',
                 25,
                 20,
                 17,
-                '2015-04-07 18:00',
+                '2015-04-14 18:00',
                 'David',
                 '13601372153');
                 
-INSERT INTO club_robot.activities
+INSERT INTO activities
   (title, discription, activity_position, start_time, stop_time,
-                price_male, price_femal, max_participants, dead_line, organiser, organiser_phone)
+                cost_male, cost_female, max_participants, dead_line, organiser, organiser_phone)
             VALUES
-                ('4月9日周四晚上7:00后沙峪友瑞羽毛球俱乐部常规活动', 
+                ('4月16日周四晚上7:00后沙峪友瑞羽毛球俱乐部常规活动', 
                 '后沙峪友瑞羽毛球俱乐部常规活动', 
                 '天裕胜羽毛球馆',
-                '2015-04-09 19:00', 
-                '2015-04-09 21:00',
+                '2015-04-16 19:00', 
+                '2015-04-16 21:00',
                 25,
                 20,
                 12,
-                '2015-04-09 18:00',
+                '2015-04-16 18:00',
                 'David',
                 '13601372153');
               
-INSERT INTO club_robot.activities
+INSERT INTO activities
   (title, discription, activity_position, start_time, stop_time,
-                price_male, price_femal, max_participants, dead_line, organiser, organiser_phone)
+                cost_male, cost_female, max_participants, dead_line, organiser, organiser_phone)
             VALUES
-                ('4月11日周六下午3:00后沙峪友瑞俱乐部周度积分赛', 
+                ('4月18日周六下午3:00后沙峪友瑞俱乐部周度积分赛', 
                 '后沙峪友瑞俱乐部周度积分赛', 
                 '天裕胜羽毛球馆',
-                '2015-04-11 15:00', 
-                '2015-04-11 18:00',
+                '2015-04-18 15:00', 
+                '2015-04-18 18:00',
                 35,
                 30,
                 100,
-                '2015-04-11 14:00',
+                '2015-04-18 14:00',
                 'David',
                 '13601372153');
 
-select title, activity_position,start_time,stop_time,price_male, price_femal, max_participants, dead_line, organiser, organiser_phone
+select title, activity_position,start_time,stop_time,cost_male, cost_female, max_participants, dead_line, organiser, organiser_phone
 from activities where start_time > '2015-04-09 08:00:00' and start_time < '2015-04-16 08:30:00'
 
 活动类型： 羽毛球

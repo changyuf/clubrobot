@@ -32,7 +32,7 @@ class QQUser:
         self.city = None  # 城市
         self.personal = None  # 个人说明
         # the following field is used for qq robot
-        self.balance = random.randint(1, 100)
+        self.balance = 0  # random.randint(1, 100)
         self.club_level = random.randint(0, 5)
         self.activity_times = 0
         self.accumulate_points = 0

@@ -57,7 +57,7 @@ if __name__ == "__main__":
     begin_time = dt.strftime('%Y-%m-%d %H:%M:%S')
     dt2 = dt + datetime.timedelta(days=7)
     end_time = dt2.strftime('%Y-%m-%d %H:%M:%S')
-    sql = """select title, activity_position,start_time,stop_time,price_male, price_female,
+    sql = """select title, activity_position,start_time,stop_time,cost_male, cost_female,
         max_participants,dead_line, organiser, organiser_phone from activities
         where start_time > '%s' and start_time < '%s'""" % (begin_time, end_time)
     rows = db.fetchall(sql)

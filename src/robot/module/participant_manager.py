@@ -70,7 +70,7 @@ class ParticipantManager:
 
     def get_participant_message(self, activity_id, max_participants):
         participants = self.get_participants(activity_id)
-        msg = "人数限制：%d/%d\\n" % (len(participants), max_participants)
+        msg = "人数限制：%d/%d\\n" % (ParticipantManager.get_participants_number(participants), max_participants)
         msg += "已报名人员：\\n"
         for participant in participants:
             msg += "【%s】 %s(%s)" % (participant.type, participant.card, participant.gender)
@@ -81,5 +81,13 @@ class ParticipantManager:
             msg += "\\n"
 
         return msg
+
+    @staticmethod
+    def get_participants_number(participants):
+        number = 0
+        for participant in participants:
+            number += 1 + participant.add_on_male + participant.add_on_female
+
+        return number
 
 

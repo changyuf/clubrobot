@@ -4,13 +4,14 @@ __author__ = 'changyuf'
 import re
 import json
 import urllib
-import shutil
 import random
+import time
 import logging
 from qqadapter.core.qqconstants import QQConstants
 from qqadapter.utilities.utilities import WebQQException
 from qqadapter.utilities.qq_encryptor import QQEncryptor
 from qqadapter.core.qqsession import QQSession
+from robot.utility.config import Config
 
 
 class LoginModule:
@@ -137,7 +138,23 @@ class LoginModule:
 
     def __read_verify_code(self, reason):
         self.__get_captcha_image()
-        return raw_input(reason + ":")
+        config = Config()
+        captcha_image = config.get("qq_adapter", "captcha_image")
+        captcha_file = config.get("qq_adapter", "captcha_file")
+        f = open(captcha_file, "w")
+        f.close()
+        print "please open %s and input the captcha into %s" % (captcha_image, captcha_file)
+        while True:
+            f = open(captcha_file, "r")
+            captcha = f.read(4)
+            if len(captcha) >= 4:
+                break
+            f.close()
+            time.sleep(2)
+
+        return captcha
+
+        #return raw_input(reason + ":")
 
     def __get_captcha_image(self):
         # URL_GET_CAPTCHA
@@ -152,12 +169,14 @@ class LoginModule:
         if not response:
             raise WebQQException("__get_captcha_image failed")
 
-        with open("verify_2.png", 'wb') as outfile:
+        config = Config()
+        captcha_image = config.get("qq_adapter", "captcha_image")
+        with open(captcha_image, 'wb') as outfile:
             outfile.write(response.content)
 
-        with open("verify.png", 'wb') as f:
-            response.raw.decode_content = True
-            shutil.copyfileobj(response.raw, f)
+        # with open("verify.png", 'wb') as f:
+        #     response.raw.decode_content = True
+        #     shutil.copyfileobj(response.raw, f)
 
     def __check_login_sig(self, url):
         response = self.context.http_service.get(url)

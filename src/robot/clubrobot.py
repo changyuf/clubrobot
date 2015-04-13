@@ -28,9 +28,12 @@ if __name__ == '__main__':
     log_file = config.get("robot", "log_file")
     logging.basicConfig(filename=log_file, level=logging.INFO)
     logging.info("\n\n******************** START ********************")
+    qq = config.get("qq_adapter", "qq")
+    password = config.get("qq_adapter", "password")
+    client = QQClient(qq, password)
     # client = QQClient('3173831764', '123456789')  #小秘书
 
-    client = QQClient('2899530487', '123456789')
+    #client = QQClient('2899530487', '123456789')
     #client = QQClient('3106426008', 'leepet123')
     #client = QQClient('3047296752', '123456789')
     qq_account_manager = QQAccountManager()
@@ -43,7 +46,8 @@ if __name__ == '__main__':
         client.get_group_list()
 
         for group in client.context.store.group_map.values():
-            if group.name == "运动测试" or group.name == "后沙峪友瑞羽毛球群":
+            if group.name == config.get("robot", "group_name"):
+            #if group.name == "运动测试" or group.name == "后沙峪友瑞羽毛球群":
                 #logging("开始获取群详细信息")
                 client.get_group_info(group)
                 client.get_group_member_account(group)

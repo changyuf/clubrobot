@@ -49,3 +49,15 @@ class QQAccountManager:
         if len(users) == 0:
             return None
         return users[0]
+
+    def get_arrearage_user_message(self):
+        sql = "SELECT card, balance FROM qq_account WHERE balance < 0"
+        results = self.db_manager.fetchall(sql)
+        if not results or len(results) == 0:
+            return "没有欠费用户"
+
+        content = "欠费用户：\\n"
+        for row in results:
+            content += "用户：%s, 欠费：%d\\n" % (to_str(row[0]), row[1])
+
+        return content

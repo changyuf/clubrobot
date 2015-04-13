@@ -8,7 +8,7 @@ from robot.utility.singleton import Singleton
 
 class Config(Singleton):
     def __init__(self):
-        self.cf = ConfigParser.ConfigParser()
+        self.cf = ConfigParser.SafeConfigParser()
         config_file = os.getenv("CONFIG_FILE", os.path.join(os.getcwd(), "config", "club_robot.conf"))
         self.cf.read(config_file)
         self.test = 1
@@ -35,6 +35,11 @@ if __name__ == "__main__":
     group_name = config.get("robot", "group_name")
     print group_name
     print group_name == "后沙峪友瑞羽毛球群"
+
+    print config.get("qq_adapter", "qq")
+    print config.get("qq_adapter", "password")
+    print config.get("qq_adapter", "mq_comm_js_linux")
+
 
 
 

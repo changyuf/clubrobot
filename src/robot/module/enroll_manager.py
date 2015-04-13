@@ -25,7 +25,7 @@ class EnrollManager:
         except WrongMessageException:
             logging.exception("ENROLL failed.")
             return "@%s,取消报名没成功，输入格式不正确" % msg.from_user.card
-        activity = self.__get_activity(weekday)
+        activity = self.activity_manager.get_activity(weekday)
         if not activity:
             return "@%s,取消报名没成功，输入的日期不对" % msg.from_user.card
 
@@ -52,9 +52,9 @@ class EnrollManager:
             logging.exception("ENROLL failed.")
             return "@%s,报名没成功，输入格式不正确" % msg.from_user.card
 
-        activity = self.__get_activity(ret[0])
+        activity = self.activity_manager.get_activity(ret[0])
         if not activity:
-            return "@%s,报名没成功，%s没有活动" % (msg.from_user.card, Constants.WEEKDAY[ret[0]])
+            return "@%s,%s没有活动" % (msg.from_user.card, Constants.WEEKDAY[ret[0]])
 
         # 检查是否已经报名
         p = self.participant_manager.get_participant(activity.id, msg.from_user.qq)
@@ -66,15 +66,15 @@ class EnrollManager:
             return "@%s,报名没成功，本次活动报名已经截至" % msg.from_user.card
 
         if msg.from_user.gender == "女":
-            needed_money = activity.price_female
+            needed_money = activity.cost_female
         else:
-            needed_money = activity.price_male
-        needed_money += activity.price_female * ret[1]["女"] + activity.price_male * ret[1]["男"]
-        if needed_money > msg.from_user.balance:
+            needed_money = activity.cost_male
+        needed_money += activity.cost_female * ret[1]["女"] + activity.cost_male * ret[1]["男"]
+        if needed_money > msg.from_user.balance + 35:
             return "@%s,你的余额不足,请充值后再报名." % msg.from_user.card
 
         participants = self.participant_manager.get_participants(activity.id)
-        number = EnrollManager.__get_participants_number(participants)
+        number = ParticipantManager.__get_participants_number(participants)
         if number == activity.max_participants:
             return "@%s,报名没成功，本次活动已经满员" % msg.from_user.card
         needed_position = ret[1]["男"] + ret[1]["女"] + 1
@@ -111,26 +111,12 @@ class EnrollManager:
 
         return participant
 
-    @staticmethod
-    def __get_participants_number(participants):
-        number = 0
-        for participant in participants:
-            number += 1 + participant.add_on_male + participant.add_on_female
 
-        return number
-
-    def __get_activity(self, weekday):
-        activities = self.activity_manager.get_recent_activities()
-        for activity in activities:
-            if weekday == activity.start_time.weekday():
-                return activity
-
-        return None
 
     @staticmethod
     def __parse_cancel_message(content):
         content = content.replace(" ", "")
-        content = content.replace("#取消报名", "")
+        content = content.replace("*取消", "")
         if not content:
             raise WrongMessageException()
 
@@ -143,7 +129,7 @@ class EnrollManager:
     @staticmethod
     def __parse_enroll_message(content):
         content = content.replace(" ", "")
-        content = content.replace("#报名", "")
+        content = content.replace("*报名", "")
         if not content:
             raise WrongMessageException()
         its = content.split("+")
