@@ -106,9 +106,10 @@ class MessageProcessor:
         qq_user = self.qq_account_manager.get_user(user)
         if not qq_user:
             qq_user = user
+            if not qq_user.card:
+                qq_user.card = qq_user.nick_name
             self.qq_account_manager.insert_user(qq_user)
-        if not qq_user.card:
-            qq_user.card = qq_user.nick_name
+
         msg.from_user = qq_user
 
     def __deal_with_accumulate_points(self, msg):
