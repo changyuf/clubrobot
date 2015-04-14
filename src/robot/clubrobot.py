@@ -77,5 +77,7 @@ if __name__ == '__main__':
 
     begin_poll_message(client, msg_processor)
 
+    logging.info("******************** END ********************\n\n")
+
 
 
