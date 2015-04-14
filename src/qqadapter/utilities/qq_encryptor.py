@@ -13,28 +13,31 @@ from robot.utility.config import Config
 
 
 class QQEncryptor:
+    if platform.system() != "Windows":
+        rt = spidermonkey.Runtime()
+        cx = rt.new_context()
+
     def __init__(self):
         pass
 
-    @staticmethod
-    def encrypt2(qq_account, verify_code):
+    @classmethod
+    def encrypt2(cls, qq_account, verify_code):
         if platform.system() == "Windows":
             return QQEncryptor.__encrypt_windows(qq_account, verify_code)
         else:
             return QQEncryptor.__encrypt_linux(qq_account, verify_code)
 
-    @staticmethod
-    def __encrypt_linux(qq_account, verify_code):
-        rt = spidermonkey.Runtime()
-        cx = rt.new_context()
+    @classmethod
+    def __encrypt_linux(cls, qq_account, verify_code):
         config = Config()
         mq_comm_js = config.get("qq_adapter", "mq_comm_js_linux")
         fs = open(mq_comm_js, "r")
-        func = cx.execute(fs.read())
+        func = cls.cx.execute(fs.read())
+        fs.close()
         return func(qq_account.password, qq_account.uin_hex, verify_code)
 
-    @staticmethod
-    def __encrypt_windows(qq_account, verify_code):
+    @classmethod
+    def __encrypt_windows(cls, qq_account, verify_code):
         js = win32com.client.Dispatch('MSScriptControl.ScriptControl')
         js.Language = 'JavaScript'
         js.AllowUI  = False
@@ -42,17 +45,18 @@ class QQEncryptor:
         mq_comm_js = config.get("qq_adapter", "mq_comm_js_windows")
         fs = open(mq_comm_js, "r")
         js.AddCode(fs.read())
+        fs.close()
         return js.Run("getPassword", qq_account.password, qq_account.uin_hex, verify_code)
 
-    @staticmethod
-    def hash(uin, ptwebqq):
+    @classmethod
+    def hash(cls, uin, ptwebqq):
         if platform.system() == "Windows":
             return QQEncryptor.__hash_windows(uin, ptwebqq)
         else:
             return QQEncryptor.__hash_linux(uin, ptwebqq)
 
-    @staticmethod
-    def __hash_windows(uin, ptwebqq):
+    @classmethod
+    def __hash_windows(cls, uin, ptwebqq):
         js = win32com.client.Dispatch('MSScriptControl.ScriptControl')
         js.Language = 'JavaScript'
         js.AllowUI  = False
@@ -60,16 +64,16 @@ class QQEncryptor:
         hash_js = config.get("qq_adapter", "hash_js_windows")
         fs = open(hash_js, "r")
         js.AddCode(fs.read())
+        fs.close()
         return js.Run("hash", uin, ptwebqq)
 
-    @staticmethod
-    def __hash_linux(uin, ptwebqq):
-        rt = spidermonkey.Runtime()
-        cx = rt.new_context()
+    @classmethod
+    def __hash_linux(cls, uin, ptwebqq):
         config = Config()
         hash_js = config.get("qq_adapter", "hash_js_linux")
         fs = open(hash_js, "r")
-        func = cx.execute(fs.read())
+        func = cls.cx.execute(fs.read())
+        fs.close()
         return func(uin, ptwebqq)
 
 
