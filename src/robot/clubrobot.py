@@ -11,9 +11,22 @@ from robot.module.message_processor import MessageProcessor
 from robot.utility.data_sync import DataSync
 from robot.module.qq_account_manager import QQAccountManager
 
+def read_stop_flag(flag_file):
+    f = open(flag_file)
+    txt = f.read(4)
+    if txt == "stop":
+        return False
+    f.close()
+    return True
+
 
 def begin_poll_message(qq_client, processor):
-    while True:
+    config = Config()
+    stop_flag_file = config.get("robot", "stop_flag_file")
+    f = open(stop_flag_file, "w")
+    f.close()
+    flag = True
+    while flag:
         try:
             msg = qq_client.poll_message()
             if msg:
@@ -21,6 +34,8 @@ def begin_poll_message(qq_client, processor):
         except WebQQException, e:
             logging.exception("poll message failed.ignore it, try again.")
         time.sleep(1)
+        flag = read_stop_flag(stop_flag_file)
+
     return True
 
 if __name__ == '__main__':

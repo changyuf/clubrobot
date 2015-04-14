@@ -74,7 +74,7 @@ class EnrollManager:
             return "@%s,你的余额不足,请充值后再报名." % msg.from_user.card
 
         participants = self.participant_manager.get_participants(activity.id)
-        number = ParticipantManager.__get_participants_number(participants)
+        number = ParticipantManager.get_participants_number(participants)
         if number == activity.max_participants:
             return "@%s,报名没成功，本次活动已经满员" % msg.from_user.card
         needed_position = ret[1]["男"] + ret[1]["女"] + 1

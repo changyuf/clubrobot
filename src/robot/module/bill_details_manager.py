@@ -37,7 +37,7 @@ class BillDetailsManager:
         if len(bills) == 0:
             return "@%s 您最近没有余额变更记录" % user.card
 
-        content = "@%s 余额变更信息：\\n"
+        content = "@%s 余额变更信息：\\n" % user.card
         for bill in bills:
             if not bill.comments:
                 bill.comments = " "
@@ -55,7 +55,7 @@ class BillDetailsManager:
         if not rows or len(rows) == 0:
             return "@%s 您最近没有积分变更记录" % user.card
 
-        content = "@%s 积分变更信息：\\n"
+        content = "@%s 积分变更信息：\\n" % user.card
         for row in rows:
             if not row[3]:
                 row[3] = " "
