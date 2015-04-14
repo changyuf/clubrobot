@@ -3,54 +3,20 @@ select * from club_robot.activities;
 
 SELECT title, start_time, activity_position FROM activities WHERE activity_position = '天裕胜羽毛球馆' ORDER BY start_time DESC LIMIT 2;
 
+INSERT INTO account_bill_details(account_type,account_id,account_name,operator,operate_time,balance_change,balance,comments)
+	VALUES(
+		'QQ',
+		'17014162',
+		'test',
+		'test_admin',
+		'2015-04-14 19:00',
+		100,
+		100,
+		'充值'
+	);
+	
 
-INSERT INTO activities
-  (title, discription, activity_position, start_time, stop_time,
-                cost_male, cost_female, max_participants, dead_line, organiser, organiser_phone)
-            VALUES
-                ('4月14日周二晚上7:00后沙峪友瑞羽毛球俱乐部常规活动', 
-                '后沙峪友瑞羽毛球俱乐部常规活动', 
-                '天裕胜羽毛球馆',
-                '2015-04-14 19:00', 
-                '2015-04-14 21:00',
-                25,
-                20,
-                17,
-                '2015-04-14 18:00',
-                'David',
-                '13601372153');
-                
-INSERT INTO activities
-  (title, discription, activity_position, start_time, stop_time,
-                cost_male, cost_female, max_participants, dead_line, organiser, organiser_phone)
-            VALUES
-                ('4月16日周四晚上7:00后沙峪友瑞羽毛球俱乐部常规活动', 
-                '后沙峪友瑞羽毛球俱乐部常规活动', 
-                '天裕胜羽毛球馆',
-                '2015-04-16 19:00', 
-                '2015-04-16 21:00',
-                25,
-                20,
-                12,
-                '2015-04-16 18:00',
-                'David',
-                '13601372153');
-              
-INSERT INTO activities
-  (title, discription, activity_position, start_time, stop_time,
-                cost_male, cost_female, max_participants, dead_line, organiser, organiser_phone)
-            VALUES
-                ('4月18日周六下午3:00后沙峪友瑞俱乐部周度积分赛', 
-                '后沙峪友瑞俱乐部周度积分赛', 
-                '天裕胜羽毛球馆',
-                '2015-04-18 15:00', 
-                '2015-04-18 18:00',
-                35,
-                30,
-                100,
-                '2015-04-18 14:00',
-                'David',
-                '13601372153');
+
 
 select title, activity_position,start_time,stop_time,cost_male, cost_female, max_participants, dead_line, organiser, organiser_phone
 from activities where start_time > '2015-04-09 08:00:00' and start_time < '2015-04-16 08:30:00'
@@ -76,7 +42,7 @@ select count(*) from club_robot.qq_account;
 
 SELECT * FROM club_robot.qq_account where nick_name = 'test';
 
-UPDATE club_robot.qq_account  SET comments = "英俊潇洒、风流倜傥、玉树临风、年少多金、神勇威武、天下无敌、宇内第一" WHERE nick_name = 'test';
+UPDATE club_robot.qq_account  SET comments = "英俊潇洒、风流倜傥、玉树临风、年少多金、神勇威武、天下无敌、宇内第一" WHERE qq = '17014162';
 
 UPDATE club_robot.qq_account  SET other_comments = "该人的自我评价非常中肯" WHERE nick_name = 'test';
 

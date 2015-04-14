@@ -112,7 +112,7 @@ class ChatModule:
         post_data = "r=%s&clientid=%s&psessionid=%s" % (
             urllib.quote(json_data), self.context.qq_session.client_id, self.context.qq_session.session_id)
 
-        logging.info("send message.post_data: %s", post_data)
+        logging.debug("send message.post_data: %s", post_data)
         response = self.context.http_service.post(url, post_data)
         if not response:
             raise WebQQException("send message failed")

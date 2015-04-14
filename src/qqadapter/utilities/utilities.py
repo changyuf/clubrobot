@@ -22,6 +22,9 @@ def transfer_gender(gender):
 class WebQQException(Exception):
     pass
 
+class KickOffException(Exception):
+    pass
+
 
 # class HttpCookies:
 #     cookie_jar = cookielib.LWPCookieJar(filename="./http_cookies.txt")

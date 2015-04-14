@@ -2,6 +2,7 @@
 __author__ = 'changyuf'
 
 import logging
+import time
 from qqadapter.core.qqsession import QQSession
 from qqadapter.module.user_module import UserModule
 from qqadapter.module.group_module import GroupModule
@@ -11,7 +12,7 @@ from qqadapter.module.login_module import LoginModule
 from qqadapter.core.qq_context import QQContext
 from qqadapter.module.poll_message_module import PollMessageModule
 from qqadapter.module.chat_module import ChatModule
-
+from qqadapter.utilities.utilities import WebQQException, KickOffException
 
 class QQClient:
     def __init__(self, user_name, password):
@@ -73,7 +74,7 @@ class QQClient:
             # {"retcode":121,"t":"0"}
             logging.info("**** NEED_REAUTH retcode: %d %s", retcode, " ****")
             self.context.qq_session.state = QQSession.State.OFFLINE
-            self.login_module.channel_login()
+            self.__channel_login()
         else:
             logging.error("**Reply retcode to author**")
             logging.error("***************************")
@@ -81,9 +82,25 @@ class QQClient:
             logging.error("***************************")
             # 遇到未知retcode
             self.context.qq_session.state = QQSession.State.ERROR
-            self.login_module.channel_login()
+            self.__channel_login()
 
         return None
+
+    def __channel_login(self):
+        try_times = 10
+
+        while try_times >= 0:
+            try:
+                self.login_module.channel_login()
+                break
+            except WebQQException:
+                try_times -= 1
+                time.sleep(2)
+
+        if try_times < 0:
+            logging.error("Channel login failed. Maybe qq was kicked off")
+            raise KickOffException("kick off")
+
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS club_robot_test;
-USE club_robot_test;
-GRANT ALL ON club_robot_test.* TO 'changyuf'@'%';
+CREATE DATABASE IF NOT EXISTS club_robot;
+USE club_robot;
+GRANT ALL ON club_robot.* TO 'changyuf'@'%';
 
 CREATE TABLE IF NOT EXISTS qq_account(
 	uin VARCHAR(40) CHARACTER SET utf8 DEFAULT NULL, 
@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS qq_account(
 	card VARCHAR(200) COLLATE utf8_unicode_ci DEFAULT NULL,
 	comments VARCHAR(200) COLLATE utf8_unicode_ci DEFAULT NULL,
 	other_comments VARCHAR(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+	weixin_id VARCHAR(200) COLLATE utf8_unicode_ci DEFAULT NULL,
 	PRIMARY KEY (qq)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 	

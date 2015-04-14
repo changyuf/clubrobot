@@ -41,7 +41,7 @@ class PollMessageModule:
         response = self.context.http_service.post(url, post_data)
         if not response:
             raise WebQQException("poll message failed")
-        logging.info("response of POLL_MESSAGE:%s", response.content)
+        logging.debug("response of POLL_MESSAGE:%s", response.content)
 
         return response
 
@@ -65,9 +65,11 @@ class PollMessageModule:
                 buddy = self.context.store.buddy_map[str(from_uin)]
             elif poll_type == "message":
                 # 好友消息
+                logging.info("收到好友消息")
                 msg = self.__parse_buddy_message(poll_data)
             elif poll_type == "group_message":
                 # 群消息
+                logging.info("收到群消息")
                 msg = self.__parse_group_message(poll_data)
             elif poll_type == "discu_message":
                 # 讨论组消息

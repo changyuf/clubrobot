@@ -36,8 +36,10 @@ class QQUser:
         self.club_level = random.randint(0, 5)
         self.activity_times = 0
         self.accumulate_points = 0
-        self.comments = self.COMMENT_DICT[random.randint(0, 4)]
-        self.other_comments = "没有人愿意评价此人"
+        # self.comments = self.COMMENT_DICT[random.randint(0, 4)]
+        self.comments = ""
+        # self.other_comments = "没有人愿意评价此人"
+        self.other_comments = ""
 
     class Status(Enum):
         ONLINE = 10

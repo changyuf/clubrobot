@@ -6,7 +6,7 @@ import logging
 
 from robot.utility.config import Config
 from qqadapter.qqclient import QQClient
-from qqadapter.utilities.utilities import WebQQException
+from qqadapter.utilities.utilities import WebQQException, KickOffException
 from robot.module.message_processor import MessageProcessor
 from robot.utility.data_sync import DataSync
 from robot.module.qq_account_manager import QQAccountManager
@@ -33,6 +33,10 @@ def begin_poll_message(qq_client, processor):
                 processor.process(msg)
         except WebQQException, e:
             logging.exception("poll message failed.ignore it, try again.")
+        except KickOffException:
+            logging.exception("QQ has been kicked off.")
+            break
+
         time.sleep(1)
         flag = read_stop_flag(stop_flag_file)
 
