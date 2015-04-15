@@ -3,6 +3,7 @@ __author__ = 'changyuf'
 
 import sys
 import os
+import logging
 import platform
 import random
 import datetime
@@ -49,6 +50,15 @@ class TestProperty(object):
 from qqadapter.core.qqconstants import QQConstants
 
 if __name__ == "__main__":
+    try:
+        aa = 1 / 0
+    except:
+        logging.exception("url %s", "aaa")
+        print "**********end()*************"
+        #exit()
+
+    print "afeafeafaf"
+    exit()
     msg = "报名  周六+1女+2男"
     msg = msg.replace(" ", "")
     msg = msg.replace("报名", "")

@@ -154,6 +154,6 @@ class PollMessageModule:
             msg.from_user = member
             group.members.append(member)
 
-            self.user_module.get_stranger_info( member)
+            self.user_module.get_stranger_info(member)
 
         return msg

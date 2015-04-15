@@ -56,7 +56,7 @@ if __name__ == '__main__':
     #client = QQClient('3106426008', 'leepet123')
     #client = QQClient('3047296752', '123456789')
     qq_account_manager = QQAccountManager()
-    msg_processor = MessageProcessor(client.chat_module, qq_account_manager)
+    msg_processor = MessageProcessor(client, qq_account_manager)
     data_sync = DataSync(qq_account_manager)
     try:
         client.login()
@@ -66,12 +66,12 @@ if __name__ == '__main__':
 
         for group in client.context.store.group_map.values():
             if group.name == config.get("robot", "group_name"):
-            #if group.name == "运动测试" or group.name == "后沙峪友瑞羽毛球群":
-                #logging("开始获取群详细信息")
+                # if group.name == "运动测试" or group.name == "后沙峪友瑞羽毛球群":
+                # logging("开始获取群详细信息")
                 client.get_group_info(group)
-                client.get_group_member_account(group)
-                data_sync.sync_group(group)
-                #logging("获取群详细信息结束.")
+                # client.get_group_member_account(group)
+                # data_sync.sync_group(group)
+                # logging("获取群详细信息结束.")
     except WebQQException, e:
         logging.exception("Login failed.")
         logging.info("******************** END ********************\n\n")
