@@ -2,6 +2,8 @@
 __author__ = 'changyuf'
 
 import requests
+import json
+import logging
 import xml.etree.ElementTree as ET
 from robot.utility.utilities import to_str
 
@@ -12,6 +14,36 @@ class WeatherManager:
 
     @staticmethod
     def get_weather_message():
+        try:
+            response = requests.get("http://api.map.baidu.com/telematics/v3/weather?location=北京&output=json&ak=7lWN7A96VaYBaCeAxQxsWZhe")
+            data = json.loads(response.text, encoding='utf-8')
+            results = data["results"][0]
+            city = results["currentCity"]
+            message =""
+            message += "城市：%s\\n" % to_str(city)
+            pm25 = results["pm25"]
+            message += "空指：%s\\n" % to_str(pm25)
+            today = results["weather_data"][0]
+            message += "%s %s %s %s\\n" % (to_str(today["date"]), to_str(today["weather"]), to_str(today["wind"]), to_str(today["temperature"]))
+            tomorrow = results["weather_data"][1]
+            message += "%s %s %s %s\\n" % (to_str(tomorrow["date"]), to_str(tomorrow["weather"]), to_str(tomorrow["wind"]), to_str(tomorrow["temperature"]))
+            indexes = results["index"]
+            for index in indexes:
+                title = to_str(index["title"])
+                if title == "穿衣":
+                    message += "穿衣指数：%s\\n" % to_str(index["des"])
+                elif title == "洗车":
+                    message += "洗车指数：%s\\n" % to_str(index["des"])
+                elif title == "运动":
+                    message += "运动指数：%s\\n" % to_str(index["des"])
+        except:
+            logging.exception("get weather info failed")
+            return "获取天气信息失败"
+
+        return message
+
+    @staticmethod
+    def get_weather_message2():
         #response = requests.get("http://api.k780.com:88/?app=weather.today&weaid=101010100&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json")
         #response = requests.get("http://apistore.baidu.com/microservice/weather?cityid=101010100")
         response = requests.get("http://wthrcdn.etouch.cn/WeatherApi?citykey=101010100")
@@ -55,6 +87,9 @@ class WeatherManager:
 
 
 if __name__ == "__main__":
-    WeatherManager.get_weather_message()
+    message = WeatherManager.get_weather_message()
+    message = message.replace("\\n", "\n")
+    print message
+
 
 
