@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS club_robot;
+CREATE DATABASE IF NOT EXISTS club_robot CHARACTER SET utf8;
 USE club_robot;
 GRANT ALL ON club_robot.* TO 'changyuf'@'%';
 
