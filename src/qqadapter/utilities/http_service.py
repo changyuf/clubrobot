@@ -17,10 +17,10 @@ class HttpService:
         try:
             response = self.session.get(url, params=parameters, headers=header)
             if response.status_code != 200:
-                logging.error("Get data failed. URL: %s", response)
+                logging.error("Get data failed. URL: %s", url)
                 return None
         except requests.exceptions.RequestException:
-            logging.exception()
+            logging.exception("Get data failed. URL:%s", url)
             return None
 
         return response
@@ -29,10 +29,10 @@ class HttpService:
         try:
             response = self.session.post(url, data=post_data, headers=header)
             if response.status_code != 200:
-                logging.error("Get data failed. URL: %s", response)
+                logging.error("Get data failed. URL: %s", url)
                 return None
         except requests.exceptions.RequestException:
-            logging.exception()
+            logging.exception("Get data failed. URL: %s", url)
             return None
 
         return response

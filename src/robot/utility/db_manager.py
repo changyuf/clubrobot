@@ -25,7 +25,7 @@ class DBManager(Singleton):
         except MySQLdb.Error, e:
             logging.error("fetch data from database failed. SQL:%s", sql)
             logging.error("Error %d: %s", e.args[0], e.args[1])
-            logging.exception()
+            logging.exception("fetchh data from databse failed")
         finally:
             if con:
                 con.close()
@@ -43,7 +43,7 @@ class DBManager(Singleton):
                 con.rollback()
             logging.error("fetch data from database failed. SQL:%s", sql)
             logging.error("Error %d: %s", e.args[0], e.args[1])
-            logging.exception()
+            logging.exception("fetch data from database failed")
             return False
         finally:
             if con:

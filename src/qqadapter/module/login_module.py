@@ -219,6 +219,6 @@ class LoginModule:
             self.context.qq_session.index = ret["index"]
             self.context.qq_session.port = ret["port"]
         except ValueError:
-            logging.exception()
+            logging.exception("channel login failed json format error")
             raise WebQQException("channel login failed json format error")
 
