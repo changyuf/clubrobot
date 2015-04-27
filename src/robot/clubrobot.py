@@ -1,6 +1,7 @@
 # -*- coding:utf8 -*-
 __author__ = 'changyuf'
 
+import os
 import time
 import logging
 
@@ -50,6 +51,13 @@ if __name__ == '__main__':
     qq = config.get("qq_adapter", "qq")
     password = config.get("qq_adapter", "password")
     client = QQClient(qq, password)
+
+    # output pid
+    pid_file = config.get("robot", "pid_file")
+    pid = os.getpgid()
+    f = open(pid_file, "w")
+    f.write(pid)
+    f.close()
     # client = QQClient('3173831764', '123456789')  #小秘书
 
     #client = QQClient('2899530487', '123456789')
