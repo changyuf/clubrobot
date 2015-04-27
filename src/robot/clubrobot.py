@@ -54,9 +54,9 @@ if __name__ == '__main__':
 
     # output pid
     pid_file = config.get("robot", "pid_file")
-    pid = os.getpgid()
+    pid = os.getpid()
     f = open(pid_file, "w")
-    f.write(pid)
+    f.write(str(pid))
     f.close()
     # client = QQClient('3173831764', '123456789')  #小秘书
 
